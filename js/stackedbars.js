@@ -78,7 +78,6 @@ function CreateStackedBarChart(dataNest, selector) {
         d.co2 = d.co2/totalCo2 * 100;
         d.elec = d.elec/totalElec * 100;
         d.oil = d.oil/totalOil * 100;
-        console.log(d);
 
         var y0 = 0;
         d.mappedvalues = color.domain().map(function(name) { return {name: name, y0: y0, y1: y0 += +d[name]}; });
@@ -114,7 +113,6 @@ function CreateStackedBarChart(dataNest, selector) {
         .attr("transform", "rotate(45)")
         .style("text-anchor", "start");
 
-
     var state = svg.selectAll(".state")
         .data(mappedData)
       .enter().append("g")
@@ -124,10 +122,14 @@ function CreateStackedBarChart(dataNest, selector) {
     state.selectAll("rect")
         .data(function(d) { return d.mappedvalues; })
       .enter().append("rect")
+        .attr("y", function(d) { return y(d.y0); })
         .attr("width", x.rangeBand())
+        .attr("height", 0)
+        .style("fill", function(d) { return color(d.name); })
+      .transition()
+        .delay(function(d, i) { return i * 300; })
         .attr("y", function(d) { return y(d.y1); })
-        .attr("height", function(d) { return y(d.y0) - y(d.y1); })
-        .style("fill", function(d) { return color(d.name); });
+        .attr("height", function(d) { return y(d.y0) - y(d.y1); });
 
     svg.append("g")
         .attr("class", "y axis")
