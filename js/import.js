@@ -1,7 +1,6 @@
 $("#resetbtn").hide();
 
 var countryDefaults = {};
-var countryData;
 var measurementItem = "co2";
 var parseDate = d3.time.format("%Y").parse;
 
@@ -64,16 +63,21 @@ d3.csv("co2.csv", function(error, data1) {
       });
 
       //define the pallete scales for in the map
-      co2PaletteScale = createPaletteScale(minCo2, maxCo2/4, co2mincolor, co2maxcolor); //divide by 4 because of one enormous outlier
-      elecPaletteScale = createPaletteScale(minElec, maxElec, elecmincolor, elecmaxcolor);
-      oilPaletteScale = createPaletteScale(minOil, maxOil, oilmincolor, oilmaxcolor);
+      // co2PaletteScale = createPaletteScale(minCo2, maxCo2/4, co2mincolor, co2maxcolor); //divide by 4 because of one enormous outlier
+      // elecPaletteScale = createPaletteScale(minElec, maxElec, elecmincolor, elecmaxcolor);
+      // oilPaletteScale = createPaletteScale(minOil, maxOil, oilmincolor, oilmaxcolor);
 
-      //make the data global
-      countryData = data;
-      console.log(countryData);
 
+      var dataArray = [];
+      for(var key in data){
+        dataArray.push(data[key]);
+      }
+      var dataNest = d3.nest()
+        .key(function(d) { return d.country; })
+        .entries(dataArray);
+
+      CreateStackedBarChart(dataNest, ".stacked-bar-chart-holder");
       // from here all functions for the charts can be called
-
     });
   });
 });
