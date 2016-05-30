@@ -26,7 +26,7 @@ function CreateStackedBarChart(dataNest, selector) {
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
   var color = d3.scale.ordinal()
-      .range(["#98abc5", "#6b486b", "#ff8c00"]);
+      .range(["#ff0000", "#00ff00", "#0000ff"]);
 
   //TODO sorting of the array
   //make the data a bit smaller for Testing and for comparing easier (216 countries is too much)
@@ -113,23 +113,25 @@ function CreateStackedBarChart(dataNest, selector) {
         .attr("transform", "rotate(45)")
         .style("text-anchor", "start");
 
-    var state = svg.selectAll(".state")
+    var layer = svg.selectAll(".state")
         .data(mappedData)
       .enter().append("g")
         .attr("class", "g")
         .attr("transform", function(d) { return "translate(" + x(d.country) + ",0)"; });
 
-    state.selectAll("rect")
+    var state = layer.selectAll("rect")
         .data(function(d) { return d.mappedvalues; })
       .enter().append("rect")
         .attr("y", function(d) { return y(d.y0); })
+        .attr("x", 0)
         .attr("width", x.rangeBand())
         .attr("height", 0)
-        .style("fill", function(d) { return color(d.name); })
-      .transition()
-        .delay(function(d, i) { return i * 300; })
-        .attr("y", function(d) { return y(d.y1); })
-        .attr("height", function(d) { return y(d.y0) - y(d.y1); });
+        .style("fill", function(d) { return color(d.name); });
+
+    state.transition()
+      .delay(function(d, i) { return i * 300; })
+      .attr("y", function(d) { return y(d.y1); })
+      .attr("height", function(d) { return y(d.y0) - y(d.y1); });
 
     svg.append("g")
         .attr("class", "y axis")
@@ -164,4 +166,46 @@ function CreateStackedBarChart(dataNest, selector) {
           }
           return d;
         });
+
+
+    d3.selectAll("input").on("change", change);
+
+    var timeout = setTimeout(function() {
+      d3.select("input[value=\"grouped\"]").property("checked", true).each(change);
+    }, 2000);
+
+    function change() {
+      clearTimeout(timeout);
+      if (this.value === "grouped") transitionGrouped();
+      else transitionStacked();
+    }
+
+    function transitionGrouped() {
+      state.transition()
+          .duration(500)
+          .delay(function(d, i) { return i * 10; })
+          .attr("width", x.rangeBand() / 3)
+    //    .transition()
+          .attr("x", function(d, i, j) { return x.rangeBand() * i / 3; })
+        .transition()
+          .attr("y", function(d) { return height + y(d.y1) - y(d.y0) })
+          .attr("height", function(d) {
+           return y(d.y0)-y(d.y1); });
+    }
+
+    function transitionStacked() {
+      state.transition()
+          .duration(500)
+          .delay(function(d, i) { return i * 10; })
+          .attr("y", function(d) { return y(d.y1); })
+          .attr("height", function(d) { return y(d.y0) - y(d.y1); })
+        .transition()
+          .attr("x", 0)
+      //  .transition()
+          .attr("width", x.rangeBand());
+
+    }
+
+
+
 }
