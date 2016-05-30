@@ -69,13 +69,17 @@ d3.csv("Population_below_national_poverty_line.csv", function(error, data1) {
       for(var key in data){
         dataArray.push(data[key]);
       }
+
       var dataNest = d3.nest()
         .key(function(d) { return d.country; })
         .entries(dataArray);
 
-      CreateStackedBarChart(dataNest, ".stacked-bar-chart-holder");
+      CreateLineChart(dataArray, ".line-chart-holder");
       CreateBubbleChart(dataArray, ".bubble-chart-holder");
-      CreateLineChart(dataArray, dataNest, ".line-chart-holder");
+
+
+
+      CreateStackedBarChart(dataNest, ".stacked-bar-chart-holder");
 
       // from here all functions for the charts can be called
     });

@@ -49,8 +49,6 @@ var data = [];
       .attr("class", "tooltip")
       .style("opacity", 0);
 
-
-  console.log(data);
   // don't want dots overlapping axis, so add in buffer to data domain
   xScale.domain([d3.min(data, xValue)-1, d3.max(data, xValue)+1]);
   yScale.domain([d3.min(data, yValue)-1, d3.max(data, yValue)+1]);
@@ -125,6 +123,5 @@ var data = [];
       .attr("dy", ".35em")
       .style("text-anchor", "end")
       .text(function(d) {
-        console.log(d);
         return d.country;})
 }
