@@ -1,11 +1,13 @@
 function CreateStackedBarChart(dataNest, selector) {
+  var amountOfSamples = 33,
+      amounfOfLayers = 3;
 
-  var margin = {top: 20, right: 20, bottom: 120, left: 40},
+  var margin = {top: 20, right: 40, bottom: 120, left: 40},
       width = 1100 - margin.left - margin.right,
       height = 500 - margin.top - margin.bottom;
 
   var x = d3.scale.ordinal()
-      .rangeRoundBands([0, width], .1);
+      .rangeRoundBands([0, width], .2);
 
   var y = d3.scale.linear()
       .rangeRound([height, 0]);
@@ -29,7 +31,7 @@ function CreateStackedBarChart(dataNest, selector) {
       .range(["#ff0000", "#00ff00", "#0000ff"]);
 
   var mappedData = [];
-  var totalCo2 = 0, totalElec = 0, totalOil = 0;
+  var totalpopulation = 0, totalliteracy = 0, totalemployment = 0;
   dataNest.forEach(function(d) {
 
     d.values.forEach(function(d) {
@@ -40,20 +42,20 @@ function CreateStackedBarChart(dataNest, selector) {
           { country: "Cameroon",
           year: Date 2010-12-31T23:00:00.000Z,
           countryShort: "CMR",
-          co2: 0.268091792889505, <---
-          elec: 259.528534999064, <---
-          oil: 321.615895400672 } <---
+          population: 0.268091792889505, <---
+          literacy: 259.528534999064, <---
+          employment: 321.615895400672 } <---
 
           We want to use the three pointed values.
           */
-          if (!isNaN(d.co2)){
-            totalCo2 = totalCo2 + d.co2;
+          if (!isNaN(d.population)){
+            totalpopulation = totalpopulation + d.population;
           }
-          if (!isNaN(d.elec)){
-            totalElec = totalElec + d.elec;
+          if (!isNaN(d.literacy)){
+            totalliteracy = totalliteracy + d.literacy;
           }
-          if (!isNaN(d.oil)){
-            totalOil = totalOil + d.oil;
+          if (!isNaN(d.employment)){
+            totalemployment = totalemployment + d.employment;
           }
 
         }
@@ -71,9 +73,9 @@ function CreateStackedBarChart(dataNest, selector) {
     if (d.year.getTime() === parseDate("2011").getTime()) {
       if (d.countryShort) {
 
-        d.co2 = d.co2/totalCo2 * 100;
-        d.elec = d.elec/totalElec * 100;
-        d.oil = d.oil/totalOil * 100;
+        d.population = d.population/totalpopulation * 100;
+        d.literacy = d.literacy/totalliteracy * 100;
+        d.employment = d.employment/totalemployment * 100;
 
         var y0 = 0;
         d.mappedvalues = color.domain().map(function(name) { return {name: name, y0: y0, y1: y0 += +d[name]}; });
@@ -87,7 +89,7 @@ function CreateStackedBarChart(dataNest, selector) {
 
 
   mappedData.sort(function(a, b) { return b.total - a.total; });
-  slicedmappedData = mappedData.slice(0,30);
+  slicedmappedData = mappedData.slice(0,amountOfSamples);
 
   x.domain(slicedmappedData.map(function(d) { return d.country; }));
   //  y.domain([0, d3.max(mappedData, function(d) { return d.total; })]);
@@ -152,8 +154,8 @@ function CreateStackedBarChart(dataNest, selector) {
         .attr("dy", ".35em")
         .style("text-anchor", "end")
         .text(function(d) {
-          if (d === 'elec') {
-            return 'electricity';
+          if (d === 'literacy') {
+            return 'literacy';
           }
           return d;
         });
@@ -182,9 +184,9 @@ function CreateStackedBarChart(dataNest, selector) {
 
     function changeSort() {
       if ((this.value === "total")) sortData('total');
-      if (this.value === "co2") sortData('co2');
-      if ((this.value === "elec")) sortData('elec');
-      if ((this.value === "oil")) sortData('oil');
+      if (this.value === "population") sortData('population');
+      if ((this.value === "literacy")) sortData('literacy');
+      if ((this.value === "employment")) sortData('employment');
         layer.data(slicedmappedData);
         layer.attr("class", function(d) { return "g " + d.countryShort })
         .transition().duration(900)
@@ -215,14 +217,14 @@ function CreateStackedBarChart(dataNest, selector) {
     function sortData(param) {
       if (param === "total") {
         mappedData.sort(function(a, b) { return b.total - a.total; });
-      } else if (param === "co2") {
-        mappedData.sort(function(a, b) { return b.co2 - a.co2; });
-      } else if (param === "elec") {
-        mappedData.sort(function(a, b) { return b.elec - a.elec; });
-      } else if (param === "oil") {
-        mappedData.sort(function(a, b) { return b.oil - a.oil; });
+      } else if (param === "population") {
+        mappedData.sort(function(a, b) { return b.population - a.population; });
+      } else if (param === "literacy") {
+        mappedData.sort(function(a, b) { return b.literacy - a.literacy; });
+      } else if (param === "employment") {
+        mappedData.sort(function(a, b) { return b.employment - a.employment; });
       }
-      slicedmappedData = mappedData.slice(0,30);
+      slicedmappedData = mappedData.slice(0,amountOfSamples);
 
       x.domain(slicedmappedData.map(function(d) {
         return d.country; }));

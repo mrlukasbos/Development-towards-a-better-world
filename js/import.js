@@ -1,15 +1,13 @@
-$("#resetbtn").hide();
-
 var countryDefaults = {};
-var measurementItem = "co2";
+var measurementItem = "population";
 var parseDate = d3.time.format("%Y").parse;
 
-var co2mincolor = "white",
-    co2maxcolor = "purple",
-    elecmincolor = "white",
-    elecmaxcolor = "darkred",
-    oilmincolor = "white",
-    oilmaxcolor = "blue",
+var populationmincolor = "white",
+    populationmaxcolor = "purple",
+    literacymincolor = "white",
+    literacymaxcolor = "darkred",
+    employmentmincolor = "white",
+    employmentmaxcolor = "blue",
     nodatacolor = "#ccc",
     selectioncolor = "steelblue";
     var steamcolor = d3.scale.linear().range(["#444", "#ccc"]);
@@ -18,7 +16,7 @@ var createPaletteScale = function(min, max, minColor, maxColor) {
   return d3.scale.linear().domain([min, max]).range([minColor, maxColor]); // greens
 }
 
-var co2PaletteScale, elecPaletteScale, oilPaletteScale;
+var populationPaletteScale, literacyPaletteScale, employmentPaletteScale;
 
 //this function creates an id and a data-key relationship and already some initial attrubutes.
 var createProperty = function(d, data) {
@@ -28,11 +26,11 @@ var createProperty = function(d, data) {
 };
 
 //import all three .csv files asynchronously
-d3.csv("co2.csv", function(error, data1) {
-  d3.csv("electricity.csv", function(error, data2) {
-    d3.csv("oil.csv", function(error, data3) {
+d3.csv("Population_below_national_poverty_line.csv", function(error, data1) {
+  d3.csv("Literacy.csv", function(error, data2) {
+    d3.csv("Employment_rates.csv", function(error, data3) {
       var data = {};
-      var minCo2 = 0, maxCo2 = 0, minElec = 0, maxElec = 0, minOil = 0, maxOil = 0;
+      var minpopulation = 0, maxpopulation = 0, minliteracy = 0, maxliteracy = 0, minemployment = 0, maxemployment = 0;
 
       /* Here each the data from each .csv sheet is taken and is given an ID, which is countryname + date
         Then the value from the first sheet will be added to that ID.
@@ -42,30 +40,30 @@ d3.csv("co2.csv", function(error, data1) {
 
       data1.forEach(function(d) {
         var key = createProperty(d, data);
-        data[key].co2 = d.val ? +d.val : 0;
+        data[key].population = d.val ? +d.val : 0;
         countryDefaults[data[key].countryShort] = { "fillColor": nodatacolor };
-        minCo2 = Math.min(data[key].co2, minCo2);
-        maxCo2 = Math.max(data[key].co2, maxCo2);
+        minpopulation = Math.min(data[key].population, minpopulation);
+        maxpopulation = Math.max(data[key].population, maxpopulation);
       });
       data2.forEach(function(d) {
         var key = createProperty(d, data);
-        data[key].elec = d.val ? +d.val : 0;
+        data[key].literacy = d.val ? +d.val : 0;
         countryDefaults[data[key].countryShort] = { "fillColor": nodatacolor };
-        minElec = Math.min(data[key].elec, minElec);
-        maxElec = Math.max(data[key].elec, maxElec);
+        minliteracy = Math.min(data[key].literacy, minliteracy);
+        maxliteracy = Math.max(data[key].literacy, maxliteracy);
       });
       data3.forEach(function(d) {
         var key = createProperty(d, data);
-        data[key].oil = d.val ? +d.val : 0;
+        data[key].employment = d.val ? +d.val : 0;
         countryDefaults[data[key].countryShort] = { "fillColor": nodatacolor };
-        minOil = Math.min(data[key].oil, minOil);
-        maxOil = Math.max(data[key].oil, maxOil);
+        minemployment = Math.min(data[key].employment, minemployment);
+        maxemployment = Math.max(data[key].employment, maxemployment);
       });
 
       //define the pallete scales for in the map
-      // co2PaletteScale = createPaletteScale(minCo2, maxCo2/4, co2mincolor, co2maxcolor); //divide by 4 because of one enormous outlier
-      // elecPaletteScale = createPaletteScale(minElec, maxElec, elecmincolor, elecmaxcolor);
-      // oilPaletteScale = createPaletteScale(minOil, maxOil, oilmincolor, oilmaxcolor);
+      // populationPaletteScale = createPaletteScale(minpopulation, maxpopulation/4, populationmincolor, populationmaxcolor); //divide by 4 because of one enormous outlier
+      // literacyPaletteScale = createPaletteScale(minliteracy, maxliteracy, literacymincolor, literacymaxcolor);
+      // employmentPaletteScale = createPaletteScale(minemployment, maxemployment, employmentmincolor, employmentmaxcolor);
 
       var dataArray = [];
       for(var key in data){
@@ -76,6 +74,9 @@ d3.csv("co2.csv", function(error, data1) {
         .entries(dataArray);
 
       CreateStackedBarChart(dataNest, ".stacked-bar-chart-holder");
+      CreateBubbleChart(dataArray, ".bubble-chart-holder");
+      CreateLineChart(dataArray, dataNest, ".line-chart-holder");
+
       // from here all functions for the charts can be called
     });
   });
