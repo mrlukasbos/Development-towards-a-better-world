@@ -23,8 +23,15 @@
     <div class="row">
       <div class="stacked-bar-chart-holder">
         <form>
-          <label><input type="radio" name="mode" value="grouped"> Grouped</label>
-          <label><input type="radio" name="mode" value="stacked" checked> Stacked</label>
+          <label><input class="modetoggle" type="radio" name="mode" value="grouped"> Grouped</label>
+          <label><input class="modetoggle" type="radio" name="mode" value="stacked" checked> Stacked</label>
+        </form>
+
+        <form>
+          <label> Sort: <input class="sorttoggle" type="radio" name="sort" value="total" checked> total</label>
+          <label><input class="sorttoggle" type="radio" name="sort" value="co2"> co2</label>
+          <label><input class="sorttoggle" type="radio" name="sort" value="elec"> electricity</label>
+          <label><input class="sorttoggle" type="radio" name="sort" value="oil"> oil </label>
         </form>
       </div>
 

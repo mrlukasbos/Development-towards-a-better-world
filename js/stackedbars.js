@@ -17,7 +17,7 @@ function CreateStackedBarChart(dataNest, selector) {
   var yAxis = d3.svg.axis()
       .scale(y)
       .orient("left")
-      .tickFormat(d3.format(".2s"));
+      .tickFormat(function(d) { return d + "%"; });
 
   var svg = d3.select(selector).append("svg")
       .attr("width", width + margin.left + margin.right)
@@ -27,10 +27,6 @@ function CreateStackedBarChart(dataNest, selector) {
 
   var color = d3.scale.ordinal()
       .range(["#ff0000", "#00ff00", "#0000ff"]);
-
-  //TODO sorting of the array
-  //make the data a bit smaller for Testing and for comparing easier (216 countries is too much)
-  //dataNest = dataNest.splice(0, 40);
 
   var mappedData = [];
   var totalCo2 = 0, totalElec = 0, totalOil = 0;
@@ -91,16 +87,11 @@ function CreateStackedBarChart(dataNest, selector) {
 
 
   mappedData.sort(function(a, b) { return b.total - a.total; });
+  slicedmappedData = mappedData.slice(0,30);
 
-  //sort i.e. on co2
-  // mappedData.sort(function(a, b) { return b.co2 - a.co2; });
-
-  mappedData = mappedData.splice(0,30);
-
-  x.domain(mappedData.map(function(d) { return d.country; }));
+  x.domain(slicedmappedData.map(function(d) { return d.country; }));
   //  y.domain([0, d3.max(mappedData, function(d) { return d.total; })]);
   y.domain([0, 20]);
-
 
     svg.append("g")
         .attr("class", "x axis")
@@ -114,9 +105,9 @@ function CreateStackedBarChart(dataNest, selector) {
         .style("text-anchor", "start");
 
     var layer = svg.selectAll(".state")
-        .data(mappedData)
+        .data(slicedmappedData)
       .enter().append("g")
-        .attr("class", "g")
+        .attr("class", function(d) { return "g " + d.countryShort })
         .attr("transform", function(d) { return "translate(" + x(d.country) + ",0)"; });
 
     var state = layer.selectAll("rect")
@@ -167,20 +158,79 @@ function CreateStackedBarChart(dataNest, selector) {
           return d;
         });
 
+    d3.selectAll(".modetoggle").on("click", change);
+    d3.selectAll(".sorttoggle").on("click", changeSort);
 
-    d3.selectAll("input").on("change", change);
 
     var timeout = setTimeout(function() {
       d3.select("input[value=\"grouped\"]").property("checked", true).each(change);
     }, 2000);
 
+    var selectedMode = "stacked";
     function change() {
       clearTimeout(timeout);
-      if (this.value === "grouped") transitionGrouped();
-      else transitionStacked();
+      if (this.value === "grouped") {
+        selectedMode = "grouped";
+        transitionGrouped();
+      }
+      if ((this.value === "stacked")) {
+        selectedMode = "stacked";
+        transitionStacked();
+      }
+      svg.selectAll("g.y.axis").call(yAxis);
+    }
+
+    function changeSort() {
+      if ((this.value === "total")) sortData('total');
+      if (this.value === "co2") sortData('co2');
+      if ((this.value === "elec")) sortData('elec');
+      if ((this.value === "oil")) sortData('oil');
+        layer.data(slicedmappedData);
+        layer.attr("class", function(d) { return "g " + d.countryShort })
+        .transition().duration(900)
+          .attr("transform", function(d) {
+            return "translate(" + x(d.country) + ", 0)";});
+            state.data(function(d) { return d.mappedvalues; })
+
+            if (selectedMode === "stacked") {
+              transitionStacked();
+            } else if (selectedMode === "grouped") {
+              transitionGrouped();
+            }
+
+        svg.selectAll("g.x.axis")
+        .attr("transform", "translate(0," + height + ")")
+        .transition()
+        .duration(900)
+        .call(xAxis)
+        .selectAll("text")
+          .attr("y", 10)
+          .attr("x", 5)
+          .attr("dy", ".35em")
+          .attr("transform", "rotate(45)")
+          .style("text-anchor", "start");
+
+    }
+
+    function sortData(param) {
+      if (param === "total") {
+        mappedData.sort(function(a, b) { return b.total - a.total; });
+      } else if (param === "co2") {
+        mappedData.sort(function(a, b) { return b.co2 - a.co2; });
+      } else if (param === "elec") {
+        mappedData.sort(function(a, b) { return b.elec - a.elec; });
+      } else if (param === "oil") {
+        mappedData.sort(function(a, b) { return b.oil - a.oil; });
+      }
+      slicedmappedData = mappedData.slice(0,30);
+
+      x.domain(slicedmappedData.map(function(d) {
+        return d.country; }));
     }
 
     function transitionGrouped() {
+      y.domain([0, 10]);
+
       state.transition()
           .duration(500)
           .delay(function(d, i) { return i * 10; })
@@ -194,6 +244,8 @@ function CreateStackedBarChart(dataNest, selector) {
     }
 
     function transitionStacked() {
+      y.domain([0, 20]);
+
       state.transition()
           .duration(500)
           .delay(function(d, i) { return i * 10; })

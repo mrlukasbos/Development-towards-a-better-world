@@ -67,7 +67,6 @@ d3.csv("co2.csv", function(error, data1) {
       // elecPaletteScale = createPaletteScale(minElec, maxElec, elecmincolor, elecmaxcolor);
       // oilPaletteScale = createPaletteScale(minOil, maxOil, oilmincolor, oilmaxcolor);
 
-
       var dataArray = [];
       for(var key in data){
         dataArray.push(data[key]);
