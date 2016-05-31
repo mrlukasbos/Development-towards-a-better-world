@@ -1,12 +1,12 @@
 function CreateLineChart(dataArray, selector) {
 
- var data = getData("BRA");
+ var data = getData("ZMB");
  var countrydata = getCountryData(data);
 var color = getColor();
 
   var margin = {top: 20, right: 80, bottom: 30, left: 50},
-  width = 960 - margin.left - margin.right,
-  height = 500 - margin.top - margin.bottom;
+  width = 1100 - margin.left - margin.right,
+  height = 300 - margin.top - margin.bottom;
 
   var x = d3.time.scale()
   .range([0, width]);
@@ -66,11 +66,15 @@ var color = getColor();
       .style("stroke", function(d) { return color(d.key); });
 
   cdata.append("text")
-      .datum(function(d) { return {name: d.key, value: d.values[d.values.length - 1]}; })
-      .attr("transform", function(d) { return "translate(" + x(d.value.year) + "," + y(d.value.value) + ")"; })
+      .datum(function(d) { return {name: d.key, value: d.values[0]}; })
+      .attr("transform", function(d) {
+        console.log((d.value.value));
+
+        return "translate(" + x(d.value.year) + "," + y(d.value.value) + ")"; })
       .attr("x", 3)
       .attr("dy", ".35em")
-      .text(function(d) { return d.key; });
+      .text(function(d) {
+        return d.name; });
 
 
 function getData(countryShort) {
@@ -78,7 +82,7 @@ function getData(countryShort) {
   dataArray.forEach( function(d) {
     if (d.water && d.mortality && d.malnourished) {
 
-      if (d.countryShort === "BRA") {
+      if (d.countryShort === countryShort) {
         data.push(d);
       }
     }
