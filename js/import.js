@@ -70,16 +70,23 @@ d3.csv("malnourished.csv", function(error, data1) {
         dataArray.push(data[key]);
       }
 
-      var dataNest = d3.nest()
-        .key(function(d) { return d.country; })
-        .entries(dataArray);
+      var compressedData = [];
+        dataArray.forEach( function(d) {
+          if (d.water && d.mortality && d.malnourished) {
+            if (d.year.getTime() === parseDate("2006").getTime()) {
+              compressedData.push(d);
+            }
+          }
+        });
 
-      CreateLineChart(dataArray, dataNest, ".line-chart-holder");
-      CreateBubbleChart(dataArray, ".bubble-chart-holder");
+
+
+    //  CreateLineChart(dataArray, ".line-chart-holder");
+      CreateBubbleChart(compressedData, ".bubble-chart-holder");
 
 
 
-      CreateStackedBarChart(dataNest, ".stacked-bar-chart-holder");
+      CreateStackedBarChart(dataArray, ".stacked-bar-chart-holder");
 
       // from here all functions for the charts can be called
     });

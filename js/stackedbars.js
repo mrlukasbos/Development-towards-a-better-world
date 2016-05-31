@@ -1,4 +1,16 @@
-function CreateStackedBarChart(dataNest, selector) {
+function CreateStackedBarChart(dataArray, selector) {
+
+  var compressedData = [];
+    dataArray.forEach( function(d) {
+      if (d.water && d.mortality && d.malnourished) {
+          compressedData.push(d);
+      }
+    });
+
+    var dataNest = d3.nest()
+      .key(function(d) { return d.country; })
+      .entries(compressedData);
+
   var amountOfSamples = 33,
       amounfOfLayers = 3;
 
@@ -194,21 +206,39 @@ function CreateStackedBarChart(dataNest, selector) {
       if ((this.value === "mortality")) sortData('mortality');
       if ((this.value === "water")) sortData('water');
 
-        layer.data(slicedmappedData);
 
-        layer.attr("class", function(d) { return "g " + d.countryShort })
-        .transition().duration(900)
-          .attr("transform", function(d) {
-            console.log(x(d.country));
-            return "translate(" + x(d.country) + ", 0)";});
+            var tempLayer = layer.data(slicedmappedData)
 
-            state.data(function(d) { return d.mappedvalues; }).exit().remove();
+            tempLayer.enter().append("g")
+                .attr("class", function(d) { return "g " + d.countryShort })
+                .attr("transform", function(d) { return "translate(" + x(d.country) + ",0)"; });
+
+            tempLayer.transition().attr("class", function(d) { return "g " + d.countryShort })
+            .attr("transform", function(d) { return "translate(" + x(d.country) + ",0)"; });
+
+            tempLayer.exit().remove();
+
+
+            var tempState = state.data(function(d) { return d.mappedvalues; });
+
+
+              tempState.enter().append('rect').attr("y", function(d) { return y(d.y0); })
+              .attr("x", 0)
+              .attr("width", x.rangeBand())
+              .attr("height", 0)
+              .style("fill", function(d) { return color(d.name); });
+
 
             if (selectedMode === "stacked") {
               transitionStacked();
             } else if (selectedMode === "grouped") {
               transitionGrouped();
             }
+
+            tempState.exit().remove();
+
+
+
 
         svg.selectAll("g.x.axis")
         .attr("transform", "translate(0," + height + ")")
@@ -253,6 +283,8 @@ function CreateStackedBarChart(dataNest, selector) {
           .attr("y", function(d) { return height + y(d.y1) - y(d.y0) })
           .attr("height", function(d) {
            return y(d.y0)-y(d.y1); });
+
+
     }
 
     function transitionStacked() {
@@ -267,6 +299,7 @@ function CreateStackedBarChart(dataNest, selector) {
           .attr("x", 0)
         .transition()
           .attr("width", x.rangeBand());
+
 
     }
 
