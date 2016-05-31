@@ -174,7 +174,15 @@ function CreateStackedBarChart(dataArray, selector) {
   .attr("dy", ".35em")
   .attr("class", "label")
   .style("text-anchor", "end")
-  .text(function(d) { return d; });
+  .text(function(d){
+  if ( d == "water") { 
+	return "Water inaccessability"; }
+  if( d == "malnourished") {
+	return "Undernourishment"; }
+if( d == "mortality") {
+	return "Child mortality"; }
+})
+
 
   d3.selectAll(".modetoggle").on("click", change);
   d3.selectAll(".sorttoggle").on("click", changeSort);
