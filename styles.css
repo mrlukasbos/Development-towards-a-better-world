@@ -18,6 +18,12 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', end
   font-size: 15px;
 }
 
+.line {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
+
 .tooltip {
   position: absolute;
   width: 200px;

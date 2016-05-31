@@ -275,7 +275,7 @@ function CreateStackedBarChart(dataArray, selector) {
       .duration(500)
       .delay(function(d, i) { return i * 10; })
       .attr("width", x.rangeBand() / 3)
-      .transition()
+      .transition() //
       .attr("x", function(d, i, j) { return x.rangeBand() * i / 3; })
       .transition()
       .attr("y", function(d) { return height + y(d.y1) - y(d.y0) })
@@ -295,7 +295,7 @@ function CreateStackedBarChart(dataArray, selector) {
         .attr("height", function(d) { return y(d.y0) - y(d.y1); })
         .transition()
         .attr("x", 0)
-        .transition()
+        .transition() //
         .attr("width", x.rangeBand());
 
 
