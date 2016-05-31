@@ -35,7 +35,7 @@ var data = [];
 
   // setup fill color
   var cValue = function(d) { return d.malnourished;},
-      color = d3.scale.category10();
+  cScale = d3.scale.linear();
 
   // add the graph canvas to the body of the webpage
   var svg = d3.select(selector).append("svg")
@@ -52,6 +52,9 @@ var data = [];
   // don't want dots overlapping axis, so add in buffer to data domain
   xScale.domain([d3.min(data, xValue)-1, d3.max(data, xValue)+1]);
   yScale.domain([d3.min(data, yValue)-1, d3.max(data, yValue)+1]);
+  cScale.domain([d3.min(data, cValue)-1, d3.max(data, cValue)+1]);
+
+  color = d3.scale.linear().domain([d3.min(data, cValue)-1, d3.max(data, cValue)+1]).range(['gray', 'red']);
 
   // x-axis
   svg.append("g")
@@ -63,7 +66,7 @@ var data = [];
       .attr("x", width)
       .attr("y", -6)
       .style("text-anchor", "end")
-      .text("water Rate");
+      .text("Water Shortage (%)");
 
   // y-axis
   svg.append("g")
@@ -83,7 +86,7 @@ var data = [];
     .enter().append("circle")
       .attr("class", "dot")
       .attr("r", function(d) {
-      return d.water/2})
+      return d.malnourished/5})
       .attr("cx", xMap)
       .attr("cy", yMap)
       .style("fill", function(d) { return color(cValue(d));})
@@ -102,26 +105,26 @@ var data = [];
                .style("opacity", 0);
       });
 
-  // draw legend
-  var legend = svg.selectAll(".legend")
-      .data(data)
-    .enter().append("g")
-      .attr("class", "legend")
-      .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
-
-  // draw legend colored rectangles
-  legend.append("rect")
-      .attr("x", width - 18)
-      .attr("width", 18)
-      .attr("height", 18)
-      .style("fill", function(d) { return color(cValue(d)); });
-
-  // draw legend text
-  legend.append("text")
-      .attr("x", width - 24)
-      .attr("y", 9)
-      .attr("dy", ".35em")
-      .style("text-anchor", "end")
-      .text(function(d) {
-        return d.country;})
+  // // draw legend
+  // var legend = svg.selectAll(".legend")
+  //     .data(data)
+  //   .enter().append("g")
+  //     .attr("class", "legend")
+  //     .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+  //
+  // // draw legend colored rectangles
+  // legend.append("rect")
+  //     .attr("x", width - 18)
+  //     .attr("width", 18)
+  //     .attr("height", 18)
+  //     .style("fill", function(d) { return color(cValue(d)); });
+  //
+  // // draw legend text
+  // legend.append("text")
+  //     .attr("x", width - 24)
+  //     .attr("y", 9)
+  //     .attr("dy", ".35em")
+  //     .style("text-anchor", "end")
+  //     .text(function(d) {
+  //       return d.country;})
 }

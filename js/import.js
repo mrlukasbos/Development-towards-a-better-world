@@ -28,7 +28,7 @@ var createProperty = function(d, data) {
 //import all three .csv files asynchronously
 d3.csv("malnourished.csv", function(error, data1) {
   d3.csv("mortality.csv", function(error, data2) {
-    d3.csv("water.csv", function(error, data3) {
+    d3.csv("nowater.csv", function(error, data3) {
       var data = {};
       var minmalnourished = 0, maxmalnourished = 0, minmortality = 0, maxmortality = 0, minwater = 0, maxwater = 0;
 

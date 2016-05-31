@@ -14,6 +14,10 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', end
   shape-rendering: crispEdges;
 }
 
+.label {
+  font-size: 15px;
+}
+
 .tooltip {
   position: absolute;
   width: 200px;
