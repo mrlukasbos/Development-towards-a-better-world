@@ -7,7 +7,7 @@ function CreateLineChart(dataArray, selector) {
       }
     });
 
-    console.log(dataNest);
+//    console.log(dataNest);
 
-    
+
 }

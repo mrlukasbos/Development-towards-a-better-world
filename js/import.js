@@ -1,13 +1,13 @@
 var countryDefaults = {};
-var measurementItem = "population";
+var measurementItem = "malnourished";
 var parseDate = d3.time.format("%Y").parse;
 
-var populationmincolor = "white",
-    populationmaxcolor = "purple",
-    literacymincolor = "white",
-    literacymaxcolor = "darkred",
-    employmentmincolor = "white",
-    employmentmaxcolor = "blue",
+var malnourishedmincolor = "white",
+    malnourishedmaxcolor = "purple",
+    mortalitymincolor = "white",
+    mortalitymaxcolor = "darkred",
+    watermincolor = "white",
+    watermaxcolor = "blue",
     nodatacolor = "#ccc",
     selectioncolor = "steelblue";
     var steamcolor = d3.scale.linear().range(["#444", "#ccc"]);
@@ -16,7 +16,7 @@ var createPaletteScale = function(min, max, minColor, maxColor) {
   return d3.scale.linear().domain([min, max]).range([minColor, maxColor]); // greens
 }
 
-var populationPaletteScale, literacyPaletteScale, employmentPaletteScale;
+var malnourishedPaletteScale, mortalityPaletteScale, waterPaletteScale;
 
 //this function creates an id and a data-key relationship and already some initial attrubutes.
 var createProperty = function(d, data) {
@@ -26,11 +26,11 @@ var createProperty = function(d, data) {
 };
 
 //import all three .csv files asynchronously
-d3.csv("Population_below_national_poverty_line.csv", function(error, data1) {
-  d3.csv("Literacy.csv", function(error, data2) {
-    d3.csv("Employment_rates.csv", function(error, data3) {
+d3.csv("malnourished.csv", function(error, data1) {
+  d3.csv("mortality.csv", function(error, data2) {
+    d3.csv("water.csv", function(error, data3) {
       var data = {};
-      var minpopulation = 0, maxpopulation = 0, minliteracy = 0, maxliteracy = 0, minemployment = 0, maxemployment = 0;
+      var minmalnourished = 0, maxmalnourished = 0, minmortality = 0, maxmortality = 0, minwater = 0, maxwater = 0;
 
       /* Here each the data from each .csv sheet is taken and is given an ID, which is countryname + date
         Then the value from the first sheet will be added to that ID.
@@ -40,30 +40,30 @@ d3.csv("Population_below_national_poverty_line.csv", function(error, data1) {
 
       data1.forEach(function(d) {
         var key = createProperty(d, data);
-        data[key].population = d.val ? +d.val : 0;
+        data[key].malnourished = d.val ? +d.val : 0;
         countryDefaults[data[key].countryShort] = { "fillColor": nodatacolor };
-        minpopulation = Math.min(data[key].population, minpopulation);
-        maxpopulation = Math.max(data[key].population, maxpopulation);
+        minmalnourished = Math.min(data[key].malnourished, minmalnourished);
+        maxmalnourished = Math.max(data[key].malnourished, maxmalnourished);
       });
       data2.forEach(function(d) {
         var key = createProperty(d, data);
-        data[key].literacy = d.val ? +d.val : 0;
+        data[key].mortality = d.val ? +d.val : 0;
         countryDefaults[data[key].countryShort] = { "fillColor": nodatacolor };
-        minliteracy = Math.min(data[key].literacy, minliteracy);
-        maxliteracy = Math.max(data[key].literacy, maxliteracy);
+        minmortality = Math.min(data[key].mortality, minmortality);
+        maxmortality = Math.max(data[key].mortality, maxmortality);
       });
       data3.forEach(function(d) {
         var key = createProperty(d, data);
-        data[key].employment = d.val ? +d.val : 0;
+        data[key].water = d.val ? +d.val : 0;
         countryDefaults[data[key].countryShort] = { "fillColor": nodatacolor };
-        minemployment = Math.min(data[key].employment, minemployment);
-        maxemployment = Math.max(data[key].employment, maxemployment);
+        minwater = Math.min(data[key].water, minwater);
+        maxwater = Math.max(data[key].water, maxwater);
       });
 
       //define the pallete scales for in the map
-      // populationPaletteScale = createPaletteScale(minpopulation, maxpopulation/4, populationmincolor, populationmaxcolor); //divide by 4 because of one enormous outlier
-      // literacyPaletteScale = createPaletteScale(minliteracy, maxliteracy, literacymincolor, literacymaxcolor);
-      // employmentPaletteScale = createPaletteScale(minemployment, maxemployment, employmentmincolor, employmentmaxcolor);
+      // malnourishedPaletteScale = createPaletteScale(minmalnourished, maxmalnourished/4, malnourishedmincolor, malnourishedmaxcolor); //divide by 4 because of one enormous outlier
+      // mortalityPaletteScale = createPaletteScale(minmortality, maxmortality, mortalitymincolor, mortalitymaxcolor);
+      // waterPaletteScale = createPaletteScale(minwater, maxwater, watermincolor, watermaxcolor);
 
       var dataArray = [];
       for(var key in data){

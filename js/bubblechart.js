@@ -3,7 +3,7 @@ function CreateBubbleChart(dataArray, selector) {
 
 var data = [];
   dataArray.forEach( function(d) {
-    if (d.employment && d.literacy && d.population) {
+    if (d.water && d.mortality && d.malnourished) {
       if (d.year.getTime() === parseDate("2006").getTime()) {
         data.push(d);
       }
@@ -22,19 +22,19 @@ var data = [];
    */
 
   // setup x
-  var xValue = function(d) { return d.employment;}, // data -> value
+  var xValue = function(d) { return d.water;}, // data -> value
       xScale = d3.scale.linear().range([0, width]), // value -> display
       xMap = function(d) { return xScale(xValue(d));}, // data -> display
       xAxis = d3.svg.axis().scale(xScale).orient("bottom");
 
   // setup y
-  var yValue = function(d) { return d.literacy }, // data -> value
+  var yValue = function(d) { return d.mortality }, // data -> value
       yScale = d3.scale.linear().range([height, 0]), // value -> display
       yMap = function(d) { return yScale(yValue(d));}, // data -> display
       yAxis = d3.svg.axis().scale(yScale).orient("left");
 
   // setup fill color
-  var cValue = function(d) { return d.population;},
+  var cValue = function(d) { return d.malnourished;},
       color = d3.scale.category10();
 
   // add the graph canvas to the body of the webpage
@@ -63,7 +63,7 @@ var data = [];
       .attr("x", width)
       .attr("y", -6)
       .style("text-anchor", "end")
-      .text("Employment Rate");
+      .text("water Rate");
 
   // y-axis
   svg.append("g")
@@ -75,7 +75,7 @@ var data = [];
       .attr("y", 6)
       .attr("dy", ".71em")
       .style("text-anchor", "end")
-      .text("Literacy");
+      .text("mortality");
 
   // draw dots
   svg.selectAll(".dot")
@@ -83,7 +83,7 @@ var data = [];
     .enter().append("circle")
       .attr("class", "dot")
       .attr("r", function(d) {
-      return d.employment/2})
+      return d.water/2})
       .attr("cx", xMap)
       .attr("cy", yMap)
       .style("fill", function(d) { return color(cValue(d));})

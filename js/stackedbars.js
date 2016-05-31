@@ -31,7 +31,7 @@ function CreateStackedBarChart(dataNest, selector) {
       .range(["#333333", "#485dc4", "#ff2626"]);
 
   var mappedData = [];
-  var totalpopulation = 0, totalliteracy = 0, totalemployment = 0;
+  var totalmalnourished = 0, totalmortality = 0, totalwater = 0;
   dataNest.forEach(function(d) {
 
     d.values.forEach(function(d) {
@@ -42,21 +42,27 @@ function CreateStackedBarChart(dataNest, selector) {
           { country: "Cameroon",
           year: Date 2010-12-31T23:00:00.000Z,
           countryShort: "CMR",
-          population: 0.268091792889505, <---
-          literacy: 259.528534999064, <---
-          employment: 321.615895400672 } <---
+          malnourished: 0.268091792889505, <---
+          mortality: 259.528534999064, <---
+          water: 321.615895400672 } <---
 
           We want to use the three pointed values.
           */
-          if (!isNaN(d.population)){
-            totalpopulation = totalpopulation + d.population;
+          if (!isNaN(d.malnourished)){
+            totalmalnourished = totalmalnourished + d.malnourished;
+          } else {
+            d.malnourished = 0;
           }
-          if (!isNaN(d.literacy)){
-            totalliteracy = totalliteracy + d.literacy;
+          if (!isNaN(d.mortality)){
+            totalmortality = totalmortality + d.mortality;
+          } else {
+            d.mortality = 0;
           }
-          if (!isNaN(d.employment)){
-            totalemployment = totalemployment + d.employment;
-          }
+          if (!isNaN(d.water)){
+            totalwater = totalwater + d.water;
+          } else {
+          d.water = 0;
+        }
 
         }
       }
@@ -73,9 +79,9 @@ function CreateStackedBarChart(dataNest, selector) {
     if (d.year.getTime() === parseDate("2011").getTime()) {
       if (d.countryShort) {
 
-        d.population = d.population/totalpopulation * 100;
-        d.literacy = d.literacy/totalliteracy * 100;
-        d.employment = d.employment/totalemployment * 100;
+        d.malnourished = d.malnourished/totalmalnourished * 100;
+        d.mortality = d.mortality/totalmortality * 100;
+        d.water = d.water/totalwater * 100;
 
         var y0 = 0;
         d.mappedvalues = color.domain().map(function(name) { return {name: name, y0: y0, y1: y0 += +d[name]}; });
@@ -93,7 +99,7 @@ function CreateStackedBarChart(dataNest, selector) {
 
   x.domain(slicedmappedData.map(function(d) { return d.country; }));
   //  y.domain([0, d3.max(mappedData, function(d) { return d.total; })]);
-  y.domain([0, 20]);
+  y.domain([0, 6]);
 
     svg.append("g")
         .attr("class", "x axis")
@@ -134,7 +140,7 @@ function CreateStackedBarChart(dataNest, selector) {
         .attr("y", 6)
         .attr("dy", ".71em")
         .style("text-anchor", "end")
-        .text("Population (% of world total)");
+        .text("malnourished (% of world total)");
 
     var legend = svg.selectAll(".legend")
         .data(color.domain().slice().reverse())
@@ -154,8 +160,8 @@ function CreateStackedBarChart(dataNest, selector) {
         .attr("dy", ".35em")
         .style("text-anchor", "end")
         .text(function(d) {
-          if (d === 'literacy') {
-            return 'literacy';
+          if (d === 'mortality') {
+            return 'mortality';
           }
           return d;
         });
@@ -184,15 +190,19 @@ function CreateStackedBarChart(dataNest, selector) {
 
     function changeSort() {
       if ((this.value === "total")) sortData('total');
-      if (this.value === "population") sortData('population');
-      if ((this.value === "literacy")) sortData('literacy');
-      if ((this.value === "employment")) sortData('employment');
+      if (this.value === "malnourished") sortData('malnourished');
+      if ((this.value === "mortality")) sortData('mortality');
+      if ((this.value === "water")) sortData('water');
+
         layer.data(slicedmappedData);
+
         layer.attr("class", function(d) { return "g " + d.countryShort })
         .transition().duration(900)
           .attr("transform", function(d) {
+            console.log(x(d.country));
             return "translate(" + x(d.country) + ", 0)";});
-            state.data(function(d) { return d.mappedvalues; })
+
+            state.data(function(d) { return d.mappedvalues; }).exit().remove();
 
             if (selectedMode === "stacked") {
               transitionStacked();
@@ -217,12 +227,12 @@ function CreateStackedBarChart(dataNest, selector) {
     function sortData(param) {
       if (param === "total") {
         mappedData.sort(function(a, b) { return b.total - a.total; });
-      } else if (param === "population") {
-        mappedData.sort(function(a, b) { return b.population - a.population; });
-      } else if (param === "literacy") {
-        mappedData.sort(function(a, b) { return b.literacy - a.literacy; });
-      } else if (param === "employment") {
-        mappedData.sort(function(a, b) { return b.employment - a.employment; });
+      } else if (param === "malnourished") {
+        mappedData.sort(function(a, b) { return b.malnourished - a.malnourished; });
+      } else if (param === "mortality") {
+        mappedData.sort(function(a, b) { return b.mortality - a.mortality; });
+      } else if (param === "water") {
+        mappedData.sort(function(a, b) { return b.water - a.water; });
       }
       slicedmappedData = mappedData.slice(0,amountOfSamples);
 
@@ -231,13 +241,13 @@ function CreateStackedBarChart(dataNest, selector) {
     }
 
     function transitionGrouped() {
-      y.domain([0, 10]);
+      y.domain([0, 6]);
 
       state.transition()
           .duration(500)
           .delay(function(d, i) { return i * 10; })
           .attr("width", x.rangeBand() / 3)
-    //    .transition()
+        .transition()
           .attr("x", function(d, i, j) { return x.rangeBand() * i / 3; })
         .transition()
           .attr("y", function(d) { return height + y(d.y1) - y(d.y0) })
@@ -246,7 +256,7 @@ function CreateStackedBarChart(dataNest, selector) {
     }
 
     function transitionStacked() {
-      y.domain([0, 20]);
+      y.domain([0, 6]);
 
       state.transition()
           .duration(500)
@@ -255,7 +265,7 @@ function CreateStackedBarChart(dataNest, selector) {
           .attr("height", function(d) { return y(d.y0) - y(d.y1); })
         .transition()
           .attr("x", 0)
-      //  .transition()
+        .transition()
           .attr("width", x.rangeBand());
 
     }
