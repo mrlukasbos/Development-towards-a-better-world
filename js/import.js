@@ -70,25 +70,32 @@ d3.csv("malnourished.csv", function(error, data1) {
         dataArray.push(data[key]);
       }
 
-      var compressedData = [];
-        dataArray.forEach( function(d) {
-          if (d.water && d.mortality && d.malnourished) {
-            if (d.year.getTime() === parseDate("2006").getTime()) {
-              compressedData.push(d);
-            }
-          }
-        });
 
 
 
     //  CreateLineChart(dataArray, ".line-chart-holder");
-      CreateBubbleChart(compressedData, ".bubble-chart-holder");
-
-
-
+      CreateBubbleChart(dataArray, ".bubble-chart-holder");
       CreateStackedBarChart(dataArray, ".stacked-bar-chart-holder");
-
-      // from here all functions for the charts can be called
+      addOnclickListeners()
     });
   });
 });
+
+
+function addOnclickListeners() {
+
+  d3.selectAll('.dot').on('click', function(info) {
+    updateColors(info.countryShort);
+  });
+  d3.selectAll('.layer').on('click', function(info) {
+  updateColors(info.countryShort);
+  });
+}
+
+function updateColors(selector) {
+  selector = "." + selector;
+
+  d3.selectAll(selector).style('fill', 'green');
+  d3.selectAll(selector+" rect").style('fill', function(d,i) { return "rgb(0, " + (102 + (i * 51)) + ", 0)" });
+
+}

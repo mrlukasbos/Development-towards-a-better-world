@@ -4,7 +4,7 @@ function CreateBubbleChart(dataArray, selector) {
 var data = [];
   dataArray.forEach( function(d) {
     if (d.water && d.mortality && d.malnourished) {
-      if (d.year.getTime() === parseDate("2006").getTime()) {
+      if (d.year.getTime() === parseDate("2011").getTime()) {
         data.push(d);
       }
     }
@@ -54,7 +54,7 @@ var data = [];
   yScale.domain([d3.min(data, yValue)-1, d3.max(data, yValue)+1]);
   cScale.domain([d3.min(data, cValue)-1, d3.max(data, cValue)+1]);
 
-  color = d3.scale.linear().domain([d3.min(data, cValue)-1, d3.max(data, cValue)+1]).range(['gray', 'red']);
+  color = d3.scale.linear().domain([d3.min(data, cValue)-1, d3.max(data, cValue)+1]).range(['steelblue', 'red']);
 
   // x-axis
   svg.append("g")
@@ -84,9 +84,9 @@ var data = [];
   svg.selectAll(".dot")
       .data(data)
     .enter().append("circle")
-      .attr("class", "dot")
+      .attr("class", function(d) { return "dot " + d.countryShort})
       .attr("r", function(d) {
-      return d.malnourished/5})
+      return d.malnourished/3})
       .attr("cx", xMap)
       .attr("cy", yMap)
       .style("fill", function(d) { return color(cValue(d));})

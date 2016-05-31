@@ -129,12 +129,13 @@ function CreateStackedBarChart(dataArray, selector) {
   var layer = svg.selectAll(".state")
   .data(slicedmappedData)
   .enter().append("g")
-  .attr("class", function(d) { return "g " + d.countryShort })
+  .attr("class", function(d) { return "g layer " + d.countryShort })
   .attr("transform", function(d) { return "translate(" + x(d.country) + ",0)"; });
 
   var state = layer.selectAll("rect")
   .data(function(d) { return d.mappedvalues; })
   .enter().append("rect")
+  .attr("class", function(d) { return d.countryShort })
   .attr("y", function(d) { return y(d.y0); })
   .attr("x", 0)
   .attr("width", x.rangeBand())
