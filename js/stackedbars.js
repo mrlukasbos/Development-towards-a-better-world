@@ -42,7 +42,7 @@ function CreateStackedBarChart(dataArray, selector) {
   .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
   var color = d3.scale.ordinal()
-  .range(["#333333", "#485dc4", "#ff2626"]);
+  .range(["#ff2626", "#333333", "#485df4"]);
 
   var mappedData = [];
   var totalmalnourished = 0, totalmortality = 0, totalwater = 0;
