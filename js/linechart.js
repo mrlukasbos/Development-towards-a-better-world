@@ -108,7 +108,7 @@ function getCountryData(data) {
   });
   return countrydata;
 }
-
+}
 
 function updateLineChart(countryShort) {
 
@@ -126,5 +126,5 @@ function updateLineChart(countryShort) {
       .attr("x", 3)
       .attr("dy", ".35em")
       .text(function(d) { return d.key; });
-}
+
 }
