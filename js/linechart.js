@@ -4,7 +4,7 @@ function CreateLineChart(dataArray, selector) {
  var countrydata = getCountryData(data);
 var color = getColor();
 
-  var margin = {top: 20, right: 80, bottom: 30, left: 50},
+  var margin = {top: 20, right: 120, bottom: 30, left: 50},
   width = 1100 - margin.left - margin.right,
   height = 300 - margin.top - margin.bottom;
 
@@ -74,7 +74,13 @@ var color = getColor();
       .attr("x", 3)
       .attr("dy", ".35em")
       .text(function(d) {
-        return d.name; });
+  if ( d.name === "water") { 
+	return "Water inaccessability"; }
+  if( d.name === "malnourished") {
+	return "Undernourishment"; }
+if( d.name === "mortality") {
+	return "Child mortality"; }
+})
 
 
 function getData(countryShort) {
@@ -129,6 +135,13 @@ function updateLineChart(countryShort) {
       .attr("transform", function(d) { return "translate(" + x(d.value.year) + "," + y(d.value.value) + ")"; })
       .attr("x", 3)
       .attr("dy", ".35em")
-      .text(function(d) { return d.key; });
-
+      .text(function(d){
+		  console.log(d.name);
+  if ( d.name == "water") { 
+	return "Water inaccessability"; }
+  if( d.name == "malnourished") {
+	return "Undernourishment"; }
+if( d.name == "mortality") {
+	return "Child mortality"; }
+})
 }
