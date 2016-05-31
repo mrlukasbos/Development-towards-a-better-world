@@ -28,7 +28,7 @@ function CreateStackedBarChart(dataNest, selector) {
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
   var color = d3.scale.ordinal()
-      .range(["#f70000", "#ff2626", "#ff5353"]);
+      .range(["#333333", "#485dc4", "#ff2626"]);
 
   var mappedData = [];
   var totalpopulation = 0, totalliteracy = 0, totalemployment = 0;
