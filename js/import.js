@@ -83,11 +83,11 @@ function addOnclickListeners() {
 
   d3.selectAll('.dot').on('click', function(info) {
     updateColors(info.countryShort);
-    updateLineChart(info.country);
+    //updateLineChart(info.country);
   });
   d3.selectAll('.layer').on('click', function(info) {
   updateColors(info.countryShort);
-  updateLineChart(info.country);
+  //updateLineChart(info.country);
   });
 }
 

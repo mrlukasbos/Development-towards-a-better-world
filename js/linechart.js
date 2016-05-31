@@ -91,12 +91,12 @@ function getData(countryShort) {
 }
 
 function getColor() {
-  var color = d3.scale.category10();
-  color.domain(d3.keys(data[0]).filter(function(key) {
+  var color = d3.scale.ordinal()
+  .domain(d3.keys(data[0]).filter(function(key) {
     if (key !== "year" && key !== "countryShort" && key !== "country") {
       return key;
     }
-  }));
+  })).range(["#FFD218", "#222", "#ff0000"]);
   return color;
 }
 
@@ -112,23 +112,4 @@ function getCountryData(data) {
   });
   return countrydata;
 }
-}
-
-function updateLineChart(countryShort) {
-
-  cdata = d3.selectAll(".city");
-
-  cdata.data(getCountryData(getData(countryShort)));
-  cdata.append("path")
-      .attr("class", "line")
-      .attr("d", function(d) { return line(d.values); })
-      .style("stroke", function(d) { return color(d.key); });
-
-  cdata.append("text")
-      .datum(function(d) { return {name: d.key, value: d.values[d.values.length - 1]}; })
-      .attr("transform", function(d) { return "translate(" + x(d.value.year) + "," + y(d.value.value) + ")"; })
-      .attr("x", 3)
-      .attr("dy", ".35em")
-      .text(function(d) { return d.key; });
-
 }

@@ -92,9 +92,9 @@ function CreateStackedBarChart(dataArray, selector) {
       if (d.year.getTime() === parseDate("2011").getTime()) {
         if (d.countryShort) {
 
-      //    d.malnourished = d.malnourished/totalmalnourished * 100;
-      //    d.mortality = d.mortality/totalmortality * 100;
-      //    d.water = d.water/totalwater * 100;
+          //    d.malnourished = d.malnourished/totalmalnourished * 100;
+          //    d.mortality = d.mortality/totalmortality * 100;
+          //    d.water = d.water/totalwater * 100;
 
           var y0 = 0;
           d.mappedvalues = color.domain().map(function(name) { return {name: name, y0: y0, y1: y0 += +d[name]}; });
@@ -111,7 +111,7 @@ function CreateStackedBarChart(dataArray, selector) {
   slicedmappedData = mappedData.slice(0,amountOfSamples);
 
   x.domain(slicedmappedData.map(function(d) { return d.country; }));
-    y.domain([0, d3.max(slicedmappedData, function(d) { return d.total; })]);
+  y.domain([0, d3.max(slicedmappedData, function(d) { return d.total; })]);
   //y.domain([0, stackMax]);
 
   svg.append("g")
@@ -281,12 +281,10 @@ function CreateStackedBarChart(dataArray, selector) {
       .attr("y", function(d) { return height + y(d.y1) - y(d.y0) })
       .attr("height", function(d) {
         return y(d.y0)-y(d.y1); });
-
-
       }
 
       function transitionStacked() {
-      //  y.domain([0, stackMax]);
+        //  y.domain([0, stackMax]);
 
         y.domain([0, d3.max(slicedmappedData, function(d) { return d.total; })]);
 
@@ -300,17 +298,11 @@ function CreateStackedBarChart(dataArray, selector) {
         .attr("x", 0)
         .transition() //
         .attr("width", x.rangeBand());
-
-
       }
 
       function rescale() {
         svg.selectAll("g.y.axis")
         .transition().duration(900).ease("sin-in-out")  // https://github.com/mbostock/d3/wiki/Transitions#wiki-d3_ease
         .call(yAxis);
-
       }
-
-
-
     }
