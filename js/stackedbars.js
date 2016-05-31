@@ -13,8 +13,8 @@ function CreateStackedBarChart(dataArray, selector) {
 
   var amountOfSamples = 33,
   amounfOfLayers = 3,
-  groupMax = 4;
-  stackMax = 8;
+  groupMax = 35;
+  stackMax = 40;
 
   var margin = {top: 20, right: 40, bottom: 120, left: 40},
   width = 1100 - margin.left - margin.right,
@@ -155,7 +155,7 @@ function CreateStackedBarChart(dataArray, selector) {
   .attr("y", 6)
   .attr("dy", ".71em")
   .style("text-anchor", "end")
-  .text("malnourished (% of world total)");
+  .text("(% of population)");
 
   var legend = svg.selectAll(".legend")
   .data(color.domain().slice().reverse())
