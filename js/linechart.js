@@ -1,11 +1,13 @@
-function CreateLineChart(dataNest, selector) {
+function CreateLineChart(dataArray, selector) {
 
-  var data = [];
-    dataNest.forEach( function(d) {
+    var data = [];
+    dataArray.forEach( function(d) {
         if (d.country === "Brazil") {
             data.push(d);
       }
     });
 
-console.log(data);
+    console.log(dataNest);
+
+    
 }

@@ -74,7 +74,7 @@ d3.csv("Population_below_national_poverty_line.csv", function(error, data1) {
         .key(function(d) { return d.country; })
         .entries(dataArray);
 
-      CreateLineChart(dataArray, ".line-chart-holder");
+      CreateLineChart(dataArray, dataNest, ".line-chart-holder");
       CreateBubbleChart(dataArray, ".bubble-chart-holder");
 
 
