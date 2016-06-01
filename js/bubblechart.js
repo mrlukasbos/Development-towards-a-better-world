@@ -1,45 +1,39 @@
-var margin = {top: 30, right: 40, bottom: 40, left: 40},
+var margin = {top: 40, right: 40, bottom: 40, left: 40},
     width = 1100 - margin.left - margin.right,
     height = 500 - margin.top - margin.bottom;
 
 // add the graph canvas to the body of the webpage
 var svg = d3.select(".bubble-chart-holder").append("svg")
     .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom);
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-var dot, xmap, ymap, cValue;
+var dot, xmap, ymap, cValue, xScale, yScale, cScale, tooltip, xAxis, yAxis, xValue, yValue, cValue;
 
 var CreateBubbleChart = function() {
 
-var data = getBubbleData();
-
-  /*
-   * value accessor - returns the value to encode for a given data object.
-   * scale - maps value to a visual display encoding, such as a pixel position.
-   * map function - maps from data value to display value
-   * axis - sets up axis
-   */
+  var data = getBubbleData();
 
   // setup x
-  var xValue = function(d) { return d.water;}, // data -> value
-      xScale = d3.scale.linear().range([0, width]); // value -> display
-
-      xMap = function(d) { return xScale(xValue(d));}; // data -> display
-
+   xValue = function(d) { return d.water;}; // data -> value
+  xScale = d3.scale.linear().range([0, width]); // value -> display
   xAxis = d3.svg.axis().scale(xScale).orient("bottom");
 
   // setup y
-  var yValue = function(d) { return d.malnourished }, // data -> value
-      yScale = d3.scale.linear().range([height, 0]); // value -> display
-
-      yMap = function(d) { return yScale(yValue(d));}; // data -> display
-
+   yValue = function(d) { return d.malnourished }; // data -> value
+  yScale = d3.scale.linear().range([height, 0]); // value -> display
   yAxis = d3.svg.axis().scale(yScale).orient("left");
 
   // setup fill color
- cValue = function(d) { return d.mortality;},
+ cValue = function(d) { return d.mortality;};
   cScale = d3.scale.linear();
 
+
+  // add the tooltip area to the webpage
+   tooltip = d3.select(".bubble-chart-holder").append("div")
+      .attr("class", "tooltip")
+      .style("opacity", 0);
 
 
   // don't want dots overlapping axis, so add in buffer to data domain
@@ -48,6 +42,10 @@ var data = getBubbleData();
   cScale.domain([d3.min(data, cValue)-1, d3.max(data, cValue)+1]);
 
   color = d3.scale.linear().domain([d3.min(data, cValue)-1, d3.max(data, cValue)+1]).range(['steelblue', 'red']);
+
+
+        xMap = function(d) { return xScale(xValue(d));}; // data -> display
+        yMap = function(d) { return yScale(yValue(d));}; // data -> display
 
   // x-axis
   svg.append("g")
@@ -60,6 +58,7 @@ var data = getBubbleData();
       .attr("y", -6)
       .style("text-anchor", "end")
       .text("Water Shortage (%)");
+
 
   // y-axis
   svg.append("g")
@@ -74,9 +73,11 @@ var data = getBubbleData();
       .text("Undernourishment");
 
 
+
   // draw dots
    dot = svg.selectAll(".dot")
-      .data(data)
+   .data(data,function(d) { return d.countryShort; })
+
     .enter().append('circle')
     .attr("class", function(d) { return "dot " + d.countryShort})
       .attr("r", function(d) {
@@ -109,10 +110,7 @@ d3.select('#Bubbleyear').text(yearValue); //set the text to indicate which year 
 var year = parseDate(yearValue).getTime();
 console.log(year);
 
-  // add the tooltip area to the webpage
-  var tooltip = d3.select(".bubble-chart-holder").append("div")
-      .attr("class", "tooltip")
-      .style("opacity", 0);
+
 
       var data = [];
   dataArray.forEach( function(d) {
@@ -131,29 +129,9 @@ function changeBubbleValues() {
   var data = getBubbleData();
 
   dot = svg.selectAll(".dot")
-     .data(data);
+     .data(data,function(d) { return d.countryShort; });
 
-   dot.enter().append('circle')
-   .attr("class", function(d) { return "dot " + d.countryShort})
-     .attr("r", function(d) {
-     return d.mortality*2})
-     .attr("cx", xMap)
-     .attr("cy", yMap)
-     .style("fill", function(d) { return color(cValue(d));})
-     .on("mouseover", function(d) {
-         tooltip.transition()
-              .duration(200)
-              .style("opacity", .9);
-         tooltip.html(d.country + "<br/> (" + xValue(d)
-         + ", " + yValue(d) + ")")
-              .style("left", (d3.event.pageX + 5) + "px")
-              .style("top", (d3.event.pageY - 28) + "px");
-     })
-     .on("mouseout", function(d) {
-         tooltip.transition()
-              .duration(500)
-              .style("opacity", 0);
-     });
+
 
      dot.transition().duration(1000)
      .attr("class", function(d) { return "dot " + d.countryShort})
@@ -161,14 +139,17 @@ function changeBubbleValues() {
        return d.mortality*2})
        .attr("cx", xMap)
        .attr("cy", yMap)
-       .style("fill", function(d) { return color(cValue(d));})
-       .on("mouseover", function(d) {
+       //.style("fill", function(d) { return color(cValue(d));});
+
+       dot.on("mouseover", function(d) {
            tooltip.transition()
                 .duration(200)
                 .style("opacity", .9);
-           tooltip.html(d.country + "<br/> (" + xValue(d)
-           + ", " + yValue(d) + ")")
-                .style("left", (d3.event.pageX + 5) + "px")
+           tooltip.html("<b>" + d.country + " </b> <br/> water shortage: " + xValue(d)
+           + " <br> Undernourishment: " + yValue(d) +
+          " <br> Mortality: " + cValue(d)
+        )
+                .style("left", (d3.event.pageX + 10) + "px")
                 .style("top", (d3.event.pageY - 28) + "px");
        })
        .on("mouseout", function(d) {
@@ -177,6 +158,29 @@ function changeBubbleValues() {
                 .style("opacity", 0);
        });
 
-       dot.exit().remove();
+       dot.enter().append('circle')
+       .attr("class", function(d) { return "dot " + d.countryShort})
+         .attr("r", function(d) {
+         return d.mortality*2})
+         .attr("cx", xMap)
+         .attr("cy", yMap)
+         .style("fill", function(d) { return color(cValue(d));})
+         .on("mouseover", function(d) {
+             tooltip.transition()
+                  .duration(200)
+                  .style("opacity", .9);
+             tooltip.html(d.country + "<br/> (" + xValue(d)
+             + ", " + yValue(d) + ")")
+                  .style("left", (d3.event.pageX + 10) + "px")
+                  .style("top", (d3.event.pageY - 28) + "px");
+         })
+         .on("mouseout", function(d) {
+             tooltip.transition()
+                  .duration(500)
+                  .style("opacity", 0);
+         });
+
+    //     dot.exit().remove();
+
 
 }

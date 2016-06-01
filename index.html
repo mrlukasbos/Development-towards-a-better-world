@@ -42,12 +42,12 @@
 
     <div class="row">
       <div class="stacked-bar-chart-holder">
-        <form>
+        <form autocomplete="off">
           <label><input class="modetoggle" type="radio" name="mode" value="grouped"> Grouped</label>
           <label><input class="modetoggle" type="radio" name="mode" value="stacked" checked> Stacked</label>
         </form>
 
-        <form>
+        <form autocomplete="off">
           <label> Sort: <input class="sorttoggle" type="radio" name="sort" value="total" checked> Total</label>
           <label><input class="sorttoggle" type="radio" name="sort" value="malnourished"> Undernourished</label>
           <label><input class="sorttoggle" type="radio" name="sort" value="mortality"> Child mortality</label>
@@ -76,7 +76,7 @@
   <div class="col-xs-10">
     <h4 id="Bubbleyear" align="center"> 2011 </h4>
 
-    <input id="yearinput" oninput="changeBubbleValues()" type="range" min="1991" max="2011" step="1" value="1991">
+    <input id="yearinput" autocomplete="off" oninput="changeBubbleValues()" type="range" min="1991" max="2011" step="1" value="1991">
   </div>
   <div class="col-xs-1" style="text-align: center;"> 2011 </div>
 
