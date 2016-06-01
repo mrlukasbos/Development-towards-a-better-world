@@ -20,125 +20,128 @@
   <div class="container">
     <div class="row" align="center">
       <h1> Availability of basic needs around the world </h1>
-	  <h4> By The Brotherhood </h4>
+      <h4> By The Brotherhood </h4>
     </div>
 
 
-<hr>
+    <hr>
     <div class="row">
       <h1> Countries with poor quality of life </h1>
-	  <h4> Indicated below are the inaccessibility of clean water supplies, child mortality rate and undernourishment per country. </h4>
-	  <h5> - Child mortality is measured in the amount of deaths per 100 children below the age of 5. <br>
-	  - Water inaccessibility is measured in percent of the total population who do not have access to clean water sources. <br>
-	  - Undernourishment is measured in percent of people who eat less than the minimum needed amount of calories per day. </h5>
-	  <h5><b> There are multiple selection methods: </b> </h5>
-	  <h5>Undernourishment, water and mortality sort the data according to the descriptions above.<br>
-	  Stacked will stack the data to give an overview of which countries score the worst overall.<br>
-	  Grouped will divide them into the three separate columns. This gives a clear insight into which countries score the worst per category.</h5>
-	  <h5>Click on a country's values to select it. This will highlight it in green in both this chart and the bubble chart below.</h5>
-    </div>
-	<br>
-   <!--<hr> -->
-
-    <div class="row">
-      <div class="stacked-bar-chart-holder">
-        <form autocomplete="off">
-          <label><input class="modetoggle" type="radio" name="mode" value="grouped"> Grouped</label>
-          <label><input class="modetoggle" type="radio" name="mode" value="stacked" checked> Stacked</label>
-        </form>
-
-        <form autocomplete="off">
-          <label> Sort: <input class="sorttoggle" type="radio" name="sort" value="total" checked> Total</label>
-          <label><input class="sorttoggle" type="radio" name="sort" value="malnourished"> Undernourished</label>
-          <label><input class="sorttoggle" type="radio" name="sort" value="mortality"> Child mortality</label>
-          <label><input class="sorttoggle" type="radio" name="sort" value="water"> Water inaccessibility </label>
-        </form>
-      </div>
-
-    </div>
-
-<hr>
-<div class="row">
-  <h1> Correlation between child mortality rate and water inaccessibility </h1>
-  <h4> Do countries with poor water supplies have higher child mortality rates?</h4>
-  <h5> - The   size and colour intensity of the bubbles display how many children below the age of 5 die per one hundred born. <br>
-  - The x axis displays the percent of the population that does not have access to a clean water source. <br>
-  - The y axis indicates the percentage of undernourished people in the population (Bright red and big indicates a high percentage).</h5>
-</div>
-<hr>
-
-    <div class="row">
-      <div class="bubble-chart-holder">
-
-      </div>
-  <!-- slider to change time -->
-  <div class="col-xs-1 "> 1991 </div>
-  <div class="col-xs-10">
-    <h4 id="Bubbleyear" align="center"> 2011 </h4>
-    <form autocomplete="off">
-      <label><input id="Bubbleautoplay" type="checkbox" name="autoplay" checked> Autoplay</label>
-    </form>
-    <input id="yearinput" autocomplete="off" oninput="changeBubbleValues()" type="range" min="1991" max="2011" step="1" value="1991">
-  </div>
-  <div class="col-xs-1" style="text-align: center;"> 2011 </div>
-
-    </div>
-
-    <hr>
-    <div class="row">
-      <h1> Evolution of the factors per country through the years</h1>
-	  <h4> Select a country above to show its developments here.</h4>
-	  <h5> Note: Currently this only displays data for Chad; the selection code isn't quite working yet.</h5>
-    </div>
-    <hr>
-
-    <div class="row">
-      <div class="line-chart-holder">
-
-      </div>
-    </div>
-
-    <hr>
-  <div class="row" align="center">
-        Used Examples: <br>
+      <h4> Indicated below are the inaccessibility of clean water supplies, child mortality rate and undernourishment per country. </h4>
+      <h5> - Child mortality is measured in the amount of deaths per 100 children below the age of 5. <br>
+        - Water inaccessibility is measured in percent of the total population who do not have access to clean water sources. <br>
+        - Undernourishment is measured in percent of people who eat less than the minimum needed amount of calories per day. </h5>
+        <h5><b> There are multiple selection methods: </b> </h5>
+        <h5>Undernourishment, water and mortality sort the data according to the descriptions above.<br>
+          Stacked will stack the data to give an overview of which countries score the worst overall.<br>
+          Grouped will divide them into the three separate columns. This gives a clear insight into which countries score the worst per category.</h5>
+          <h5>Click on a country's values to select it. This will highlight it in green in both this chart and the bubble chart below.</h5>
+        </div>
         <br>
-        Stacked Bar Chart:
-        <a href = "https://bl.ocks.org/mbostock/3886208"> 1</a> -
-  	    <a href = "http://bl.ocks.org/mbostock/4403522"> 2 </a> -
-        <a href = "https://bl.ocks.org/mbostock/3943967"> 3 </a> -
-        <a href="http://bl.ocks.org/phoebebright/3098488"> 4 </a>
-      <br> Bubble Chart: <a href = "http://bl.ocks.org/weiglemc/6185069"> 1 </a>
-      <br> Line Chart:
-      </div>
+        <!--<hr> -->
+
+        <div class="row">
+          <div class="stacked-bar-chart-holder">
+            <form autocomplete="off">
+              <label><input class="modetoggle" type="radio" name="mode" value="grouped"> Grouped</label>
+              <label><input class="modetoggle" type="radio" name="mode" value="stacked" checked> Stacked</label>
+            </form>
+
+            <form autocomplete="off">
+              <label> Sort: <input class="sorttoggle" type="radio" name="sort" value="total" checked> Total</label>
+              <label><input class="sorttoggle" type="radio" name="sort" value="malnourished"> Undernourished</label>
+              <label><input class="sorttoggle" type="radio" name="sort" value="mortality"> Child mortality</label>
+              <label><input class="sorttoggle" type="radio" name="sort" value="water"> Water inaccessibility </label>
+            </form>
+          </div>
+
+        </div>
+
+        <hr>
+        <div class="row">
+          <h1> Correlation between child mortality rate and water inaccessibility </h1>
+          <h4> Do countries with poor water supplies have higher child mortality rates?</h4>
+          <h5> - The   size and colour intensity of the bubbles display how many children below the age of 5 die per one hundred born. <br>
+            - The x axis displays the percent of the population that does not have access to a clean water source. <br>
+            - The y axis indicates the percentage of undernourished people in the population (Bright red and big indicates a high percentage).</h5>
+          </div>
+          <hr>
+
+          <div class="row">
+            <div class="bubble-chart-holder">
+
+            </div>
+            <!-- slider to change time -->
+            <div class="row">
+
+              <div class="col-xs-1 " style="margin-top: 50px"> 1991 </div>
+              <div class="col-xs-10">
+                <h4 id="Bubbleyear" align="center"> 2011 </h4>
+                <form autocomplete="off">
+                  <label><input id="Bubbleautoplay" type="checkbox" name="autoplay" checked> Autoplay</label>
+                </form>
+                <input id="yearinput" autocomplete="off" oninput="changeBubbleValues()" type="range" min="1991" max="2011" step="1" value="1991">
+              </div>
+              <div class="col-xs-1" style="text-align: right; margin-top: 50px"> 2011 </div>
+
+            </div>
+          </div>
+
+          <hr>
+          <div class="row">
+            <h1> Evolution of the factors per country through the years</h1>
+            <h4> Select a country above to show its developments here.</h4>
+            <h5> Note: Currently this only displays data for Chad; the selection code isn't quite working yet.</h5>
+          </div>
+          <hr>
+
+          <div class="row">
+            <div class="line-chart-holder">
+
+            </div>
+          </div>
+
+          <hr>
+          <div class="row" align="center">
+            Used Examples: <br>
+            <br>
+            Stacked Bar Chart:
+            <a href = "https://bl.ocks.org/mbostock/3886208"> 1</a> -
+            <a href = "http://bl.ocks.org/mbostock/4403522"> 2 </a> -
+            <a href = "https://bl.ocks.org/mbostock/3943967"> 3 </a> -
+            <a href="http://bl.ocks.org/phoebebright/3098488"> 4 </a>
+            <br> Bubble Chart: <a href = "http://bl.ocks.org/weiglemc/6185069"> 1 </a>
+            <br> Line Chart:
+          </div>
 
 
-  </div>
-  <script src="js/isoconversion.js"></script>
-  <script src="js/bubblechart.js"></script>
-  <script src="js/linechart.js"></script>
-  <script src="js/stackedbars.js"></script>
+        </div>
+        <script src="js/isoconversion.js"></script>
+        <script src="js/bubblechart.js"></script>
+        <script src="js/linechart.js"></script>
+        <script src="js/stackedbars.js"></script>
 
-  <script src="js/import.js"></script>
-<br>
+        <script src="js/import.js"></script>
+        <br>
 
-</body>
+      </body>
 
 
-<script>
+      <script>
 
-window.setInterval(function(){
-  var slider = document.getElementById("yearinput");
-  var Bubbleautoplay = document.getElementById("Bubbleautoplay");
+      window.setInterval(function(){
+        var slider = document.getElementById("yearinput");
+        var Bubbleautoplay = document.getElementById("Bubbleautoplay");
 
-  if (Bubbleautoplay.checked === true){
+        if (Bubbleautoplay.checked === true){
 
-    if (slider.value === slider.max) {
-      slider.value = slider.min;
-    } else {
-      document.getElementById("yearinput").stepUp();
-    }
-    changeBubbleValues();
-  }
-
-}, 1000);
-</script>
+          if (slider.value === slider.max) {
+            slider.value = slider.min;
+          } else {
+            document.getElementById("yearinput").stepUp();
+          }
+          changeBubbleValues();
+        }
+        
+      }, 1000);
+      </script>
