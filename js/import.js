@@ -2,16 +2,17 @@ var dataArray = [];
 var countryDefaults = {};
 var measurementItem = "malnourished";
 var parseDate = d3.time.format("%Y").parse;
+var selectedCountry = "BRA";
 
 var malnourishedmincolor = "white",
-    malnourishedmaxcolor = "purple",
-    mortalitymincolor = "white",
-    mortalitymaxcolor = "darkred",
-    watermincolor = "white",
-    watermaxcolor = "blue",
-    nodatacolor = "#ccc",
-    selectioncolor = "steelblue";
-    var steamcolor = d3.scale.linear().range(["#444", "#ccc"]);
+malnourishedmaxcolor = "purple",
+mortalitymincolor = "white",
+mortalitymaxcolor = "darkred",
+watermincolor = "white",
+watermaxcolor = "blue",
+nodatacolor = "#ccc",
+selectioncolor = "steelblue";
+var steamcolor = d3.scale.linear().range(["#444", "#ccc"]);
 
 var createPaletteScale = function(min, max, minColor, maxColor) {
   return d3.scale.linear().domain([min, max]).range([minColor, maxColor]); // greens
@@ -34,9 +35,9 @@ d3.csv("malnourished.csv", function(error, data1) {
       var minmalnourished = 0, maxmalnourished = 0, minmortality = 0, maxmortality = 0, minwater = 0, maxwater = 0;
 
       /* Here each the data from each .csv sheet is taken and is given an ID, which is countryname + date
-        Then the value from the first sheet will be added to that ID.
-        Then in the second and third stylesheet, if the id already exists this attribute will be appended to it,
-        or a new object will be created.
+      Then the value from the first sheet will be added to that ID.
+      Then in the second and third stylesheet, if the id already exists this attribute will be appended to it,
+      or a new object will be created.
       */
 
       data1.forEach(function(d) {
@@ -70,7 +71,7 @@ d3.csv("malnourished.csv", function(error, data1) {
         dataArray.push(data[key]);
       }
 
-      CreateLineChart(dataArray, ".line-chart-holder");
+      CreateLineChart(dataArray);
       CreateBubbleChart();
       CreateStackedBarChart(dataArray, ".stacked-bar-chart-holder");
       addOnclickListeners()
@@ -82,12 +83,17 @@ d3.csv("malnourished.csv", function(error, data1) {
 function addOnclickListeners() {
 
   d3.selectAll('.dot').on('click', function(info) {
+    selectedCountry = info.countryShort;
+
     updateColors(info.countryShort);
-    //updateLineChart(info.country);
+    drawLineChart();
+    
   });
   d3.selectAll('.layer').on('click', function(info) {
-  updateColors(info.countryShort);
-  //updateLineChart(info.country);
+    selectedCountry = info.countryShort;
+
+    updateColors(info.countryShort);
+    drawLineChart();
   });
 }
 
