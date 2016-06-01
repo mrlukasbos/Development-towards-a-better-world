@@ -1,3 +1,4 @@
+var dataArray = [];
 var countryDefaults = {};
 var measurementItem = "malnourished";
 var parseDate = d3.time.format("%Y").parse;
@@ -65,13 +66,12 @@ d3.csv("malnourished.csv", function(error, data1) {
       // mortalityPaletteScale = createPaletteScale(minmortality, maxmortality, mortalitymincolor, mortalitymaxcolor);
       // waterPaletteScale = createPaletteScale(minwater, maxwater, watermincolor, watermaxcolor);
 
-      var dataArray = [];
       for(var key in data){
         dataArray.push(data[key]);
       }
 
       CreateLineChart(dataArray, ".line-chart-holder");
-      CreateBubbleChart(dataArray, ".bubble-chart-holder");
+      CreateBubbleChart();
       CreateStackedBarChart(dataArray, ".stacked-bar-chart-holder");
       addOnclickListeners()
     });

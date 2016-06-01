@@ -1,18 +1,17 @@
-//todo bubblechart
-function CreateBubbleChart(dataArray, selector) {
+var margin = {top: 30, right: 40, bottom: 40, left: 40},
+    width = 1100 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
 
-var data = [];
-  dataArray.forEach( function(d) {
-    if (d.water && d.mortality && d.malnourished) {
-      if (d.year.getTime() === parseDate("2011").getTime()) {
-        data.push(d);
-      }
-    }
-  });
+// add the graph canvas to the body of the webpage
+var svg = d3.select(".bubble-chart-holder").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom);
 
-  var margin = {top: 30, right: 40, bottom: 120, left: 40},
-      width = 1100 - margin.left - margin.right,
-      height = 500 - margin.top - margin.bottom;
+var dot, xmap, ymap, cValue;
+
+var CreateBubbleChart = function() {
+
+var data = getBubbleData();
 
   /*
    * value accessor - returns the value to encode for a given data object.
@@ -23,31 +22,25 @@ var data = [];
 
   // setup x
   var xValue = function(d) { return d.water;}, // data -> value
-      xScale = d3.scale.linear().range([0, width]), // value -> display
-      xMap = function(d) { return xScale(xValue(d));}, // data -> display
-      xAxis = d3.svg.axis().scale(xScale).orient("bottom");
+      xScale = d3.scale.linear().range([0, width]); // value -> display
+
+      xMap = function(d) { return xScale(xValue(d));}; // data -> display
+
+  xAxis = d3.svg.axis().scale(xScale).orient("bottom");
 
   // setup y
-  var yValue = function(d) { return d.mortality }, // data -> value
-      yScale = d3.scale.linear().range([height, 0]), // value -> display
-      yMap = function(d) { return yScale(yValue(d));}, // data -> display
-      yAxis = d3.svg.axis().scale(yScale).orient("left");
+  var yValue = function(d) { return d.malnourished }, // data -> value
+      yScale = d3.scale.linear().range([height, 0]); // value -> display
+
+      yMap = function(d) { return yScale(yValue(d));}; // data -> display
+
+  yAxis = d3.svg.axis().scale(yScale).orient("left");
 
   // setup fill color
-  var cValue = function(d) { return d.malnourished;},
+ cValue = function(d) { return d.mortality;},
   cScale = d3.scale.linear();
 
-  // add the graph canvas to the body of the webpage
-  var svg = d3.select(selector).append("svg")
-      .attr("width", width + margin.left + margin.right)
-      .attr("height", height + margin.top + margin.bottom)
-    .append("g")
-      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-  // add the tooltip area to the webpage
-  var tooltip = d3.select(selector).append("div")
-      .attr("class", "tooltip")
-      .style("opacity", 0);
 
   // don't want dots overlapping axis, so add in buffer to data domain
   xScale.domain([d3.min(data, xValue)-1, d3.max(data, xValue)+1]);
@@ -78,15 +71,16 @@ var data = [];
       .attr("y", 6)
       .attr("dy", ".71em")
       .style("text-anchor", "end")
-      .text("mortality");
+      .text("Undernourishment");
+
 
   // draw dots
-  svg.selectAll(".dot")
+   dot = svg.selectAll(".dot")
       .data(data)
-    .enter().append("circle")
-      .attr("class", function(d) { return "dot " + d.countryShort})
+    .enter().append('circle')
+    .attr("class", function(d) { return "dot " + d.countryShort})
       .attr("r", function(d) {
-      return d.malnourished/3})
+      return d.mortality*2})
       .attr("cx", xMap)
       .attr("cy", yMap)
       .style("fill", function(d) { return color(cValue(d));})
@@ -95,7 +89,7 @@ var data = [];
                .duration(200)
                .style("opacity", .9);
           tooltip.html(d.country + "<br/> (" + xValue(d)
-	        + ", " + yValue(d) + ")")
+          + ", " + yValue(d) + ")")
                .style("left", (d3.event.pageX + 5) + "px")
                .style("top", (d3.event.pageY - 28) + "px");
       })
@@ -105,26 +99,84 @@ var data = [];
                .style("opacity", 0);
       });
 
-  // // draw legend
-  // var legend = svg.selectAll(".legend")
-  //     .data(data)
-  //   .enter().append("g")
-  //     .attr("class", "legend")
-  //     .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
-  //
-  // // draw legend colored rectangles
-  // legend.append("rect")
-  //     .attr("x", width - 18)
-  //     .attr("width", 18)
-  //     .attr("height", 18)
-  //     .style("fill", function(d) { return color(cValue(d)); });
-  //
-  // // draw legend text
-  // legend.append("text")
-  //     .attr("x", width - 24)
-  //     .attr("y", 9)
-  //     .attr("dy", ".35em")
-  //     .style("text-anchor", "end")
-  //     .text(function(d) {
-  //       return d.country;})
+
+}
+
+
+function getBubbleData() {
+  var yearValue = document.getElementById('yearinput').value; //get the year from the slider
+d3.select('#Bubbleyear').text(yearValue); //set the text to indicate which year is selected
+var year = parseDate(yearValue).getTime();
+console.log(year);
+
+  // add the tooltip area to the webpage
+  var tooltip = d3.select(".bubble-chart-holder").append("div")
+      .attr("class", "tooltip")
+      .style("opacity", 0);
+
+      var data = [];
+  dataArray.forEach( function(d) {
+    if (d.water && d.mortality && d.malnourished) {
+      if (d.year.getTime() === year) {
+        if(d.countryShort) {
+          data.push(d);
+        }
+      }
+    }
+  });
+  return data;
+}
+
+function changeBubbleValues() {
+  var data = getBubbleData();
+
+  dot = svg.selectAll(".dot")
+     .data(data);
+
+   dot.enter().append('circle')
+   .attr("class", function(d) { return "dot " + d.countryShort})
+     .attr("r", function(d) {
+     return d.mortality*2})
+     .attr("cx", xMap)
+     .attr("cy", yMap)
+     .style("fill", function(d) { return color(cValue(d));})
+     .on("mouseover", function(d) {
+         tooltip.transition()
+              .duration(200)
+              .style("opacity", .9);
+         tooltip.html(d.country + "<br/> (" + xValue(d)
+         + ", " + yValue(d) + ")")
+              .style("left", (d3.event.pageX + 5) + "px")
+              .style("top", (d3.event.pageY - 28) + "px");
+     })
+     .on("mouseout", function(d) {
+         tooltip.transition()
+              .duration(500)
+              .style("opacity", 0);
+     });
+
+     dot.transition().duration(1000)
+     .attr("class", function(d) { return "dot " + d.countryShort})
+       .attr("r", function(d) {
+       return d.mortality*2})
+       .attr("cx", xMap)
+       .attr("cy", yMap)
+       .style("fill", function(d) { return color(cValue(d));})
+       .on("mouseover", function(d) {
+           tooltip.transition()
+                .duration(200)
+                .style("opacity", .9);
+           tooltip.html(d.country + "<br/> (" + xValue(d)
+           + ", " + yValue(d) + ")")
+                .style("left", (d3.event.pageX + 5) + "px")
+                .style("top", (d3.event.pageY - 28) + "px");
+       })
+       .on("mouseout", function(d) {
+           tooltip.transition()
+                .duration(500)
+                .style("opacity", 0);
+       });
+
+       dot.exit().remove();
+
 }
