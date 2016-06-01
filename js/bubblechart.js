@@ -35,14 +35,12 @@ var CreateBubbleChart = function() {
   .attr("class", "tooltip")
   .style("opacity", 0);
 
-
   // don't want dots overlapping axis, so add in buffer to data domain
-  xScale.domain([d3.min(data, xValue)-1, d3.max(data, xValue)+1]);
-  yScale.domain([d3.min(data, yValue)-1, d3.max(data, yValue)+1]);
-  cScale.domain([d3.min(data, cValue)-1, d3.max(data, cValue)+1]);
+  xScale.domain([d3.min(data, xValue)-3, d3.max(data, xValue)+3]);
+  yScale.domain([d3.min(data, yValue)-3, d3.max(data, yValue)+3]);
+  cScale.domain([d3.min(data, cValue)-3, d3.max(data, cValue)+3]);
 
   color = d3.scale.linear().domain([d3.min(data, cValue)-1, d3.max(data, cValue)+1]).range(['steelblue', 'red']);
-
 
   xMap = function(d) { return xScale(xValue(d));}; // data -> display
   yMap = function(d) { return yScale(yValue(d));}; // data -> display
