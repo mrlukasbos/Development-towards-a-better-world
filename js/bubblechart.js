@@ -74,31 +74,7 @@ var CreateBubbleChart = function() {
 
 
 
-  // draw dots
-   dot = svg.selectAll(".dot")
-   .data(data,function(d) { return d.countryShort; })
-
-    .enter().append('circle')
-    .attr("class", function(d) { return "dot " + d.countryShort})
-      .attr("r", function(d) {
-      return d.mortality*2})
-      .attr("cx", xMap)
-      .attr("cy", yMap)
-      .style("fill", function(d) { return color(cValue(d));})
-      .on("mouseover", function(d) {
-          tooltip.transition()
-               .duration(200)
-               .style("opacity", .9);
-          tooltip.html(d.country + "<br/> (" + xValue(d)
-          + ", " + yValue(d) + ")")
-               .style("left", (d3.event.pageX + 5) + "px")
-               .style("top", (d3.event.pageY - 28) + "px");
-      })
-      .on("mouseout", function(d) {
-          tooltip.transition()
-               .duration(500)
-               .style("opacity", 0);
-      });
+drawDots(data);
 
 
 }
@@ -127,6 +103,13 @@ console.log(year);
 
 function changeBubbleValues() {
   var data = getBubbleData();
+
+
+drawDots(data);
+}
+
+function drawDots(data) {
+
 
   dot = svg.selectAll(".dot")
      .data(data,function(d) { return d.countryShort; });
@@ -158,29 +141,32 @@ function changeBubbleValues() {
                 .style("opacity", 0);
        });
 
-       dot.enter().append('circle')
-       .attr("class", function(d) { return "dot " + d.countryShort})
-         .attr("r", function(d) {
-         return d.mortality*2})
-         .attr("cx", xMap)
-         .attr("cy", yMap)
-         .style("fill", function(d) { return color(cValue(d));})
-         .on("mouseover", function(d) {
-             tooltip.transition()
-                  .duration(200)
-                  .style("opacity", .9);
-             tooltip.html(d.country + "<br/> (" + xValue(d)
-             + ", " + yValue(d) + ")")
-                  .style("left", (d3.event.pageX + 10) + "px")
-                  .style("top", (d3.event.pageY - 28) + "px");
-         })
-         .on("mouseout", function(d) {
-             tooltip.transition()
-                  .duration(500)
-                  .style("opacity", 0);
-         });
-
-    //     dot.exit().remove();
+    dot.exit()
+    .transition()
+      .duration(500)
+      .attr("r", function(d) { return d.mortality*2})
+      .remove();
 
 
+  // draw dots
+   dot.enter().append('circle')
+    .attr("class", function(d) { return "dot " + d.countryShort})
+      .attr("r", 0)
+      .attr("cx", xMap)
+      .attr("cy", yMap)
+      .style("fill", function(d) { return color(cValue(d));})
+      .on("mouseover", function(d) {
+          tooltip.transition()
+               .duration(200)
+               .style("opacity", .9);
+          tooltip.html(d.country + "<br/> (" + xValue(d)
+          + ", " + yValue(d) + ")")
+               .style("left", (d3.event.pageX + 5) + "px")
+               .style("top", (d3.event.pageY - 28) + "px");
+      })
+      .on("mouseout", function(d) {
+          tooltip.transition()
+               .duration(500)
+               .style("opacity", 0);
+      }).transition().duration(500).attr("r", function(d) { return d.mortality*2});
 }

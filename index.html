@@ -75,7 +75,9 @@
   <div class="col-xs-1 "> 1991 </div>
   <div class="col-xs-10">
     <h4 id="Bubbleyear" align="center"> 2011 </h4>
-
+    <form autocomplete="off">
+      <label><input id="Bubbleautoplay" type="checkbox" name="autoplay" checked> Autoplay</label>
+    </form>
     <input id="yearinput" autocomplete="off" oninput="changeBubbleValues()" type="range" min="1991" max="2011" step="1" value="1991">
   </div>
   <div class="col-xs-1" style="text-align: center;"> 2011 </div>
@@ -120,3 +122,23 @@
 <br>
 
 </body>
+
+
+<script>
+
+window.setInterval(function(){
+  var slider = document.getElementById("yearinput");
+  var Bubbleautoplay = document.getElementById("Bubbleautoplay");
+
+  if (Bubbleautoplay.checked === true){
+
+    if (slider.value === slider.max) {
+      slider.value = slider.min;
+    } else {
+      document.getElementById("yearinput").stepUp();
+    }
+    changeBubbleValues();
+  }
+
+}, 1000);
+</script>
