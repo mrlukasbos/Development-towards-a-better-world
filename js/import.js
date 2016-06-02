@@ -73,7 +73,7 @@ d3.csv("malnourished.csv", function(error, data1) {
 
       CreateLineChart(dataArray);
       CreateBubbleChart();
-      CreateStackedBarChart(dataArray, ".stacked-bar-chart-holder");
+      CreateStackedBarChart(dataArray);
       addOnclickListeners()
     });
   });
@@ -87,7 +87,7 @@ function addOnclickListeners() {
 
     updateColors(info.countryShort);
     drawLineChart();
-    
+
   });
   d3.selectAll('.layer').on('click', function(info) {
     selectedCountry = info.countryShort;
@@ -98,7 +98,20 @@ function addOnclickListeners() {
 }
 
 function updateColors(selector) {
+  resetBarColors();
+  resetBubbleColors();
+
+
   selector = "." + selector;
   d3.selectAll(selector).style('fill', 'green');
   d3.selectAll(selector+" rect").style('fill', function(d,i) { return "rgb(0, " + (102 + (i * 51)) + ", 0)" });
+}
+
+
+function resetBarColors() {
+  d3.selectAll("rect").style('fill', function(d,i) {  return bar_color(d.name); });
+}
+function resetBubbleColors() {
+  d3.selectAll(".dot").style("fill", function(d) { return color(cValue(d)); });
+
 }

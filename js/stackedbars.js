@@ -1,47 +1,51 @@
-function CreateStackedBarChart(dataArray, selector) {
+var bar_margin = {top: 20, right: 40, bottom: 150, left: 40},
+bar_width = 1100 - bar_margin.left - bar_margin.right,
+height = 500 - bar_margin.top - bar_margin.bottom;
 
-  var compressedData = [];
+var bar_svg = d3.select(".stacked-bar-chart-holder").append("svg")
+.attr("width", bar_width + bar_margin.left + bar_margin.right)
+.attr("height", height + bar_margin.top + bar_margin.bottom)
+.append("g")
+.attr("transform", "translate(" + bar_margin.left + "," + bar_margin.top + ")");
+
+
+
+  var bar_color = d3.scale.ordinal()
+  .range(["#ff2626", "#333333", "#485df4"]);
+
+function CreateStackedBarChart(dataArray) {
+
+  var bar_compressedData = [];
   dataArray.forEach( function(d) {
     if (d.water && d.mortality && d.malnourished) {
-      compressedData.push(d);
+      bar_compressedData.push(d);
     }
   });
 
   var dataNest = d3.nest()
   .key(function(d) { return d.country; })
-  .entries(compressedData);
+  .entries(bar_compressedData);
 
-  var amountOfSamples = 33,
-  amounfOfLayers = 3,
-  groupMax = 60;
+  var bar_amountOfSamples = 33,
+  bar_amounfOfLayers = 3,
+  bar_groupMax = 60;
 
-  var margin = {top: 20, right: 40, bottom: 150, left: 40},
-  width = 1100 - margin.left - margin.right,
-  height = 500 - margin.top - margin.bottom;
+  var bar_x = d3.scale.ordinal()
+  .rangeRoundBands([0, bar_width], .2);
 
-  var x = d3.scale.ordinal()
-  .rangeRoundBands([0, width], .2);
-
-  var y = d3.scale.linear()
+  var bar_y = d3.scale.linear()
   .rangeRound([height, 0]);
 
-  var xAxis = d3.svg.axis()
-  .scale(x)
+  var bar_xAxis = d3.svg.axis()
+  .scale(bar_x)
   .orient("bottom");
 
-  var yAxis = d3.svg.axis()
-  .scale(y)
+  var bar_yAxis = d3.svg.axis()
+  .scale(bar_y)
   .orient("left")
   .tickFormat(function(d) { return d + "%"; });
 
-  var svg = d3.select(selector).append("svg")
-  .attr("width", width + margin.left + margin.right)
-  .attr("height", height + margin.top + margin.bottom)
-  .append("g")
-  .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-  var color = d3.scale.ordinal()
-  .range(["#ff2626", "#333333", "#485df4"]);
 
   var mappedData = [];
   var totalmalnourished = 0, totalmortality = 0, totalwater = 0;
@@ -76,13 +80,12 @@ function CreateStackedBarChart(dataArray, selector) {
           } else {
             d.water = 0;
           }
-
         }
       }
     });
   });
   dataNest.forEach(function(d) {
-    color.domain(d3.keys(d.values[0]).filter(function(key) {
+    bar_color.domain(d3.keys(d.values[0]).filter(function(key) {
       if (key !== 'country' && key !== "countryShort" && key !== "year") {
         return true;
       }
@@ -97,7 +100,7 @@ function CreateStackedBarChart(dataArray, selector) {
           //    d.water = d.water/totalwater * 100;
 
           var y0 = 0;
-          d.mappedvalues = color.domain().map(function(name) { return {name: name, y0: y0, y1: y0 += +d[name]}; });
+          d.mappedvalues = bar_color.domain().map(function(name) { return {name: name, y0: y0, y1: y0 += +d[name]}; });
           d.total = d.mappedvalues[d.mappedvalues.length - 1].y1;
 
           mappedData.push(d)
@@ -108,16 +111,16 @@ function CreateStackedBarChart(dataArray, selector) {
 
 
   mappedData.sort(function(a, b) { return b.total - a.total; });
-  slicedmappedData = mappedData.slice(0,amountOfSamples);
+  slicedmappedData = mappedData.slice(0,bar_amountOfSamples);
 
-  x.domain(slicedmappedData.map(function(d) { return d.country; }));
-  y.domain([0, d3.max(slicedmappedData, function(d) { return d.total; })]);
+  bar_x.domain(slicedmappedData.map(function(d) { return d.country; }));
+  bar_y.domain([0, d3.max(slicedmappedData, function(d) { return d.total; })]);
   //y.domain([0, stackMax]);
 
-  svg.append("g")
+  bar_svg.append("g")
   .attr("class", "x axis")
   .attr("transform", "translate(0," + height + ")")
-  .call(xAxis)
+  .call(bar_xAxis)
   .selectAll("text")
   .attr("y", 10)
   .attr("x", 5)
@@ -125,30 +128,30 @@ function CreateStackedBarChart(dataArray, selector) {
   .attr("transform", "rotate(45)")
   .style("text-anchor", "start");
 
-  var layer = svg.selectAll(".state")
+  var layer = bar_svg.selectAll(".state")
   .data(slicedmappedData)
   .enter().append("g")
   .attr("class", function(d) { return "g layer " + d.countryShort })
-  .attr("transform", function(d) { return "translate(" + x(d.country) + ",0)"; });
+  .attr("transform", function(d) { return "translate(" + bar_x(d.country) + ",0)"; });
 
   var state = layer.selectAll("rect")
   .data(function(d) { return d.mappedvalues; })
   .enter().append("rect")
   .attr("class", function(d) { return d.countryShort })
-  .attr("y", function(d) { return y(d.y0); })
+  .attr("y", function(d) { return bar_y(d.y0); })
   .attr("x", 0)
-  .attr("width", x.rangeBand())
+  .attr("width", bar_x.rangeBand())
   .attr("height", 0)
-  .style("fill", function(d) { return color(d.name); });
+  .style("fill", function(d) { return bar_color(d.name); });
 
   state.transition()
   .delay(function(d, i) { return i * 300; })
-  .attr("y", function(d) { return y(d.y1); })
-  .attr("height", function(d) { return y(d.y0) - y(d.y1); });
+  .attr("y", function(d) { return bar_y(d.y1); })
+  .attr("height", function(d) { return bar_y(d.y0) - bar_y(d.y1); });
 
-  svg.append("g")
+  bar_svg.append("g")
   .attr("class", "y axis")
-  .call(yAxis)
+  .call(bar_yAxis)
   .append("text")
   .attr("transform", "rotate(-90)")
   .attr("y", 6)
@@ -156,26 +159,26 @@ function CreateStackedBarChart(dataArray, selector) {
   .style("text-anchor", "end")
   .text("(% of population)");
 
-  var legend = svg.selectAll(".legend")
-  .data(color.domain().slice().reverse())
+  var legend = bar_svg.selectAll(".legend")
+  .data(bar_color.domain().slice().reverse())
   .enter().append("g")
   .attr("class", "legend")
   .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
 
   legend.append("rect")
-  .attr("x", width - 18)
+  .attr("x", bar_width - 18)
   .attr("width", 18)
   .attr("height", 18)
-  .style("fill", color);
+  .style("fill", bar_color);
 
   legend.append("text")
-  .attr("x", width - 24)
+  .attr("x", bar_width - 24)
   .attr("y", 9)
   .attr("dy", ".35em")
   .attr("class", "label")
   .style("text-anchor", "end")
   .text(function(d){
-  if ( d == "water") { 
+  if ( d == "water") {
 	return "Water inaccessability"; }
   if( d == "malnourished") {
 	return "Undernourishment"; }
@@ -216,10 +219,10 @@ if( d == "mortality") {
 
     tempLayer.enter().append("g")
     .attr("class", function(d) { return "g " + d.countryShort })
-    .attr("transform", function(d) { return "translate(" + x(d.country) + ",0)"; });
+    .attr("transform", function(d) { return "translate(" + bar_x(d.country) + ",0)"; });
 
     tempLayer.transition().attr("class", function(d) { return "g " + d.countryShort })
-    .attr("transform", function(d) { return "translate(" + x(d.country) + ",0)"; });
+    .attr("transform", function(d) { return "translate(" + bar_x(d.country) + ",0)"; });
 
     tempLayer.exit().remove();
 
@@ -227,11 +230,11 @@ if( d == "mortality") {
     var tempState = state.data(function(d) { return d.mappedvalues; });
 
 
-    tempState.enter().append('rect').attr("y", function(d) { return y(d.y0); })
+    tempState.enter().append('rect').attr("y", function(d) { return bar_y(d.y0); })
     .attr("x", 0)
-    .attr("width", x.rangeBand())
+    .attr("width", bar_x.rangeBand())
     .attr("height", 0)
-    .style("fill", function(d) { return color(d.name); });
+    .style("fill", function(d) { return bar_color(d.name); });
 
 
     if (selectedMode === "stacked") {
@@ -245,11 +248,11 @@ if( d == "mortality") {
 
 
 
-    svg.selectAll("g.x.axis")
+    bar_svg.selectAll("g.x.axis")
     .attr("transform", "translate(0," + height + ")")
     .transition()
     .duration(900)
-    .call(xAxis)
+    .call(bar_xAxis)
     .selectAll("text")
     .attr("y", 10)
     .attr("x", 5)
@@ -269,48 +272,48 @@ if( d == "mortality") {
     } else if (param === "water") {
       mappedData.sort(function(a, b) { return b.water - a.water; });
     }
-    slicedmappedData = mappedData.slice(0,amountOfSamples);
+    slicedmappedData = mappedData.slice(0,bar_amountOfSamples);
 
-    x.domain(slicedmappedData.map(function(d) {
+    bar_x.domain(slicedmappedData.map(function(d) {
       return d.country; }));
     }
 
     function transitionGrouped() {
-      y.domain([0, groupMax]);
+      bar_y.domain([0, bar_groupMax]);
 
       rescale();
       state.transition()
       .duration(500)
       .delay(function(d, i) { return i * 10; })
-      .attr("width", x.rangeBand() / 3)
+      .attr("width", bar_x.rangeBand() / 3)
       .transition() //
-      .attr("x", function(d, i, j) { return x.rangeBand() * i / 3; })
+      .attr("x", function(d, i, j) { return bar_x.rangeBand() * i / 3; })
       .transition()
-      .attr("y", function(d) { return height + y(d.y1) - y(d.y0) })
+      .attr("y", function(d) { return height + bar_y(d.y1) - bar_y(d.y0) })
       .attr("height", function(d) {
-        return y(d.y0)-y(d.y1); });
+        return bar_y(d.y0)-bar_y(d.y1); });
       }
 
       function transitionStacked() {
         //  y.domain([0, stackMax]);
 
-        y.domain([0, d3.max(slicedmappedData, function(d) { return d.total; })]);
+        bar_y.domain([0, d3.max(slicedmappedData, function(d) { return d.total; })]);
 
         rescale();
         state.transition()
         .duration(500)
         .delay(function(d, i) { return i * 10; })
-        .attr("y", function(d) { return y(d.y1); })
-        .attr("height", function(d) { return y(d.y0) - y(d.y1); })
+        .attr("y", function(d) { return bar_y(d.y1); })
+        .attr("height", function(d) { return bar_y(d.y0) - bar_y(d.y1); })
         .transition()
         .attr("x", 0)
         .transition() //
-        .attr("width", x.rangeBand());
+        .attr("width", bar_x.rangeBand());
       }
 
       function rescale() {
-        svg.selectAll("g.y.axis")
+        bar_svg.selectAll("g.y.axis")
         .transition().duration(900).ease("sin-in-out")  // https://github.com/mbostock/d3/wiki/Transitions#wiki-d3_ease
-        .call(yAxis);
+        .call(bar_yAxis);
       }
     }
