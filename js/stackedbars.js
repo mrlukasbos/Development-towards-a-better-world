@@ -154,10 +154,11 @@ function CreateStackedBarChart(dataArray) {
   .call(bar_yAxis)
   .append("text")
   .attr("transform", "rotate(-90)")
+  .attr("class", "bar_y_label")
   .attr("y", 6)
   .attr("dy", ".71em")
   .style("text-anchor", "end")
-  .text("(% of population)");
+  .text("Cumulative % of population");
 
   var legend = bar_svg.selectAll(".legend")
   .data(bar_color.domain().slice().reverse())
@@ -288,6 +289,15 @@ if( d == "mortality") {
       .attr("y", function(d) { return height + bar_y(d.y1) - bar_y(d.y0) })
       .attr("height", function(d) {
         return bar_y(d.y0)-bar_y(d.y1); });
+
+        bar_svg.selectAll(".bar_y_label")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 6)
+        .attr("dy", ".71em")
+        .attr("class", "bar_y_label")
+        .style("text-anchor", "end")
+        .text("% of population");
+
       }
 
       function transitionStacked() {
@@ -305,6 +315,14 @@ if( d == "mortality") {
         .attr("x", 0)
         .transition() //
         .attr("width", bar_x.rangeBand());
+
+        bar_svg.selectAll(".bar_y_label")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 6)
+        .attr("dy", ".71em")
+        .attr("class", "bar_y_label")
+        .style("text-anchor", "end")
+        .text("Cumulative % of population");
       }
 
       function rescale() {
