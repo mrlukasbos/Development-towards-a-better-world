@@ -1,6 +1,6 @@
-var margin = {top: 40, right: 40, bottom: 40, left: 40},
+var margin = {top: 40, right: 40, bottom: 10, left: 40},
 width = 1100 - margin.left - margin.right,
-height = 500 - margin.top - margin.bottom;
+height = 400 - margin.top - margin.bottom;
 
 // add the graph canvas to the body of the webpage
 var svg = d3.select(".bubble-chart-holder").append("svg")

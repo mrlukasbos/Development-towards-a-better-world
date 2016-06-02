@@ -169,7 +169,7 @@ function CreateStackedBarChart(dataArray) {
   .attr("x", bar_width - 18)
   .attr("width", 18)
   .attr("height", 18)
-  .style("fill", bar_color);
+  .style("fill", function(d) { return bar_color(d); });
 
   legend.append("text")
   .attr("x", bar_width - 24)
