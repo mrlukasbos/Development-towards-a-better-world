@@ -2,7 +2,7 @@ var dataArray = [];
 var countryDefaults = {};
 var measurementItem = "malnourished";
 var parseDate = d3.time.format("%Y").parse;
-var selectedCountry = "BRA";
+var selectedCountry;
 
 var malnourishedmincolor = "white",
 malnourishedmaxcolor = "purple",

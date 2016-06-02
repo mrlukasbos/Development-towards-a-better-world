@@ -186,7 +186,7 @@ function CreateStackedBarChart(dataArray) {
 	return "Undernourishment"; }
 if( d == "mortality") {
 	return "Child mortality"; }
-})
+});
 
 
   d3.selectAll(".modetoggle").on("click", change);

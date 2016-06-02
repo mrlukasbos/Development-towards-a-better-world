@@ -1,4 +1,4 @@
-var line_margin = {top: 20, right: 120, bottom: 30, left: 50},
+var line_margin = {top: 20, right: 40, bottom: 30, left: 50},
 line_width = 1100 - line_margin.left - line_margin.right,
 line_height = 300 - line_margin.top - line_margin.bottom;
 
@@ -23,11 +23,15 @@ var line_line = d3.svg.line()
 .x(function(d) { return line_x(d.year); })
 .y(function(d) { return line_y(d.value); });
 
+d3.select(".line-chart-holder").append("p").attr("class", "linechartTitleText");
+
 var line_svg = d3.select(".line-chart-holder").append("svg")
 .attr("width", line_width + line_margin.left + line_margin.right)
 .attr("height", line_height + line_margin.top + line_margin.bottom)
 .append("g")
 .attr("transform", "translate(" + line_margin.left + "," + line_margin.top + ")");
+
+
 
 function CreateLineChart(dataArray) {
   line_color = getColor();
@@ -58,17 +62,50 @@ function CreateLineChart(dataArray) {
   .style("text-anchor", "end")
   .text("Population (%)");
 
+  var legend = line_svg.selectAll(".legend")
+  .data(line_color.domain().slice().reverse())
+  .enter().append("g")
+  .attr("class", "legend")
+  .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
 
+
+  legend.append("rect")
+  .attr("x", bar_width - 18)
+  .attr("width", 18)
+  .attr("class", "barlegend")
+  .attr("height", 18)
+  .style("fill", function(d) { return line_color(d); });
+
+  legend.append("text")
+  .attr("x", bar_width - 24)
+  .attr("y", 9)
+  .attr("dy", ".35em")
+  .attr("class", "label")
+  .style("text-anchor", "end")
+  .text(function(d){
+  if ( d == "water") {
+  return "Water inaccessability"; }
+  if( d == "malnourished") {
+  return "Undernourishment"; }
+if( d == "mortality") {
+  return "Child mortality"; }
+});
 
   if (selectedCountry) {
       drawLineChart();
     } else {
-      d3.select(".line-chart-holder").append("p").html("<h3 align='center'> Click on a dot or bar to select a country </h3>")}
+      d3.select(".linechartTitleText").append("p").html("<h2 align='center'> Click on a dot or bar to select a country </h2>")}
     }
 
     function drawLineChart() {
       line_data = getData(dataArray, selectedCountry);
       line_countrydata = getCountryData(line_data);
+
+    var countryName = getCountryName(inverseisoAlphaCountries[selectedCountry]);
+
+    d3.select(".linechartTitleText").html("<h2 align='center'> Showing data of " + countryName +  "</h2>");
+
+
       drawLines(line_data, line_countrydata);
     }
 
@@ -76,14 +113,11 @@ function CreateLineChart(dataArray) {
 
       line_cdata  = line_svg.selectAll(".city").data(line_countrydata, function(d) { return d.key; });
 
-      console.log(line_countrydata);
-
       line_cdata.enter().append("g")
       .attr("class", "city")
     .append("path")
       .attr("class", "line")
       .attr("d", function(d) {
-console.log(d);
       return line_line(d.values); })
       .style("stroke", function(d) { return line_color(d.key); });
 
@@ -94,8 +128,6 @@ console.log(d);
       templine.transition()
       .attr("class", "line")
       .attr("d", function(d) {
-        console.log(d);
-
         return line_line(d.values); })
       .style("stroke", function(d) { return line_color(d.key); });
 
