@@ -130,6 +130,10 @@
       <script>
 
       window.setInterval(function(){
+
+        //update the colors so not the wrong bar is reset when the countries change position
+        updateColors(selectedCountry);
+
         var slider = document.getElementById("yearinput");
         var Bubbleautoplay = document.getElementById("Bubbleautoplay");
 

@@ -168,6 +168,7 @@ function CreateStackedBarChart(dataArray) {
   legend.append("rect")
   .attr("x", bar_width - 18)
   .attr("width", 18)
+  .attr("class", "barlegend")
   .attr("height", 18)
   .style("fill", function(d) { return bar_color(d); });
 
@@ -214,7 +215,6 @@ if( d == "mortality") {
     if ((this.value === "mortality")) sortData('mortality');
     if ((this.value === "water")) sortData('water');
 
-
     var tempLayer = layer.data(slicedmappedData)
 
     tempLayer.enter().append("g")
@@ -229,13 +229,11 @@ if( d == "mortality") {
 
     var tempState = state.data(function(d) { return d.mappedvalues; });
 
-
     tempState.enter().append('rect').attr("y", function(d) { return bar_y(d.y0); })
     .attr("x", 0)
     .attr("width", bar_x.rangeBand())
     .attr("height", 0)
     .style("fill", function(d) { return bar_color(d.name); });
-
 
     if (selectedMode === "stacked") {
       transitionStacked();
@@ -244,9 +242,6 @@ if( d == "mortality") {
     }
 
     tempState.exit().remove();
-
-
-
 
     bar_svg.selectAll("g.x.axis")
     .attr("transform", "translate(0," + height + ")")
@@ -259,6 +254,7 @@ if( d == "mortality") {
     .attr("dy", ".35em")
     .attr("transform", "rotate(45)")
     .style("text-anchor", "start");
+
 
   }
 

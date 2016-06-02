@@ -97,6 +97,7 @@ function addOnclickListeners() {
   });
 }
 
+
 function updateColors(selector) {
   resetBarColors();
   resetBubbleColors();
@@ -109,7 +110,10 @@ function updateColors(selector) {
 
 
 function resetBarColors() {
-  d3.selectAll("rect").style('fill', function(d,i) {  return bar_color(d.name); });
+  d3.selectAll("rect").style('fill', function(d,i) {
+    return bar_color(d.name); });
+    d3.selectAll(".barlegend").style('fill', function(d,i) {
+      return bar_color(d); });
 }
 function resetBubbleColors() {
   d3.selectAll(".dot").style("fill", function(d) { return color(cValue(d)); });
