@@ -16,17 +16,17 @@ var CreateBubbleChart = function() {
   var data = getBubbleData();
 
   // setup x
-  xValue = function(d) { return d.water;}; // data -> value
+  xValue = function(d) { return d.water; }; // data -> value
   xScale = d3.scale.linear().range([0, width]); // value -> display
   xAxis = d3.svg.axis().scale(xScale).orient("bottom");
 
   // setup y
-  yValue = function(d) { return d.malnourished -5 }; // data -> value
+  yValue = function(d) { return d.malnourished; }; // data -> value
   yScale = d3.scale.linear().range([height, 0]); // value -> display
   yAxis = d3.svg.axis().scale(yScale).orient("left");
 
   // setup fill color
-  cValue = function(d) { return d.mortality;};
+  cValue = function(d) { return d.mortality; };
   cScale = d3.scale.linear();
 
 
@@ -40,7 +40,7 @@ var CreateBubbleChart = function() {
   yScale.domain([d3.min(data, yValue)-3, d3.max(data, yValue)+3]);
   cScale.domain([d3.min(data, cValue)-3, d3.max(data, cValue)+3]);
 
-  color = d3.scale.linear().domain([d3.min(data, cValue)-1, d3.max(data, cValue)+1]).range(['steelblue', 'red']);
+  color = d3.scale.linear().domain([d3.min(data, cValue)-3, d3.max(data, cValue)+3]).range(['steelblue', 'red']);
 
   xMap = function(d) { return xScale(xValue(d));}; // data -> display
   yMap = function(d) { return yScale(yValue(d));}; // data -> display
